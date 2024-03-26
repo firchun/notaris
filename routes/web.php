@@ -18,7 +18,24 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $title = 'Beranda';
+    return view('pages/index', ['title' => $title]);
+});
+Route::get('/tentang_kami', function () {
+    $title = 'Tentang Kami';
+    return view('pages/tentang_kami', ['title' => $title]);
+});
+Route::get('/pengajuan_layanan', function () {
+    $title = 'Pengajuan Layanan';
+    return view('pages/pengajuan_layanan', ['title' => $title]);
+});
+Route::get('/kontak_kami', function () {
+    $title = 'Kontak Kami';
+    return view('pages/kontak_kami', ['title' => $title]);
+});
+Route::get('/tracking', function () {
+    $title = 'Tracking Pengajuan';
+    return view('pages/tracking', ['title' => $title]);
 });
 
 Auth::routes();
