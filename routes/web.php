@@ -38,8 +38,8 @@ Route::get('/tracking', function () {
     return view('pages/tracking', ['title' => $title]);
 });
 
-Auth::routes();
-Route::middleware(['auth:web'])->group(function () {
+Auth::routes(['verify' => true]);
+Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     //akun managemen
