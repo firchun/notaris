@@ -99,15 +99,17 @@
                             <label class="form-check-label" for="remember-me"> Ingat Login </label>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        {!! NoCaptcha::renderJs() !!}
-                        {!! NoCaptcha::display() !!}
-                        @error('g-recaptcha-response')
-                            <span class="text-danger" role="alert">
-                                <small>{{ $message }}</small>
-                            </span>
-                        @enderror
-                    </div>
+                    <center>
+                        <div class="mb-3 ">
+                            {!! NoCaptcha::renderJs() !!}
+                            {!! NoCaptcha::display() !!}
+                            @error('g-recaptcha-response')
+                                <span class="text-danger" role="alert">
+                                    <small>{{ $message }}</small>
+                                </span>
+                            @enderror
+                        </div>
+                    </center>
                     <div class="mb-3">
                         <button class="btn btn-primary d-grid w-100" type="submit">Masuk</button>
                     </div>
