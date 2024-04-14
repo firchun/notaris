@@ -71,10 +71,10 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">customers</span>
         </li>
-        <li class="menu-item {{ request()->is('customers') ? 'active' : '' }}">
-            <a href="{{ url('/customers') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-user"></i>
-                <div data-i18n="Analytics">Customers</div>
+        <li class="menu-item {{ request()->is('layanan') ? 'active' : '' }}">
+            <a href="{{ url('/layanan') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-folder"></i>
+                <div data-i18n="Analytics">Layanan</div>
             </a>
         </li>
         <li class="menu-header small text-uppercase">

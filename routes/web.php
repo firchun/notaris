@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\LayananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -51,6 +52,12 @@ Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::get('/customers/edit/{id}',  [CustomerController::class, 'edit'])->name('customers.edit');
     Route::delete('/customers/delete/{id}',  [CustomerController::class, 'destroy'])->name('customers.delete');
     Route::get('/customers-datatable', [CustomerController::class, 'getCustomersDataTable']);
+    //layanans managemen
+    Route::get('/layanan', [LayananController::class, 'index'])->name('layanan');
+    Route::post('/layanan/store',  [LayananController::class, 'store'])->name('layanan.store');
+    Route::get('/layanan/edit/{id}',  [LayananController::class, 'edit'])->name('layanan.edit');
+    Route::delete('/layanan/delete/{id}',  [LayananController::class, 'destroy'])->name('layanan.delete');
+    Route::get('/layanans-datatable', [LayananController::class, 'getLayanansDataTable']);
 });
 Route::middleware(['auth:web', 'role:Admin'])->group(function () {
     //user managemen
