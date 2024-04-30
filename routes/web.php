@@ -1,9 +1,15 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LayananController;
+use App\Http\Controllers\PelayananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Models\Layanan;
+use App\Models\Pelayanan;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -20,50 +26,110 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $title = 'Beranda';
-    return view('pages/index', ['title' => $title]);
+    $layanan = Layanan::all();
+    return view('pages/index', ['title' => $title, 'layanan' => $layanan]);
 });
 Route::get('/tentang_kami', function () {
-    $title = 'Tentang Kami';
-    return view('pages/tentang_kami', ['title' => $title]);
+    $data = [
+        'title' => 'Tentang Kami',
+        'setting' => Setting::latest()->first(),
+    ];
+    return view('pages/tentang_kami', $data);
 });
 Route::get('/pengajuan_layanan', function () {
     $title = 'Pengajuan Layanan';
     return view('pages/pengajuan_layanan', ['title' => $title]);
 });
 Route::get('/kontak_kami', function () {
-    $title = 'Kontak Kami';
-    return view('pages/kontak_kami', ['title' => $title]);
+    $data = [
+        'title' => 'Kontak Kami',
+        'setting' => Setting::latest()->first(),
+    ];
+    return view('pages/kontak_kami', $data);
 });
 Route::get('/tracking', function () {
     $title = 'Tracking Pengajuan';
     return view('pages/tracking', ['title' => $title]);
 });
+Route::get('/dokumen/{no_dokumen}', [HomeController::class, 'tracking'])->name('dokumen');
 
 Auth::routes(['verify' => true]);
 Route::middleware(['auth:web', 'verified'])->group(function () {
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+    //dashboard
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
+Route::middleware(['auth:web', 'verified', 'role:User'])->group(function () {
+    Route::get('/pengajuan_user', function () {
+        $data = [
+            'title' => 'Pengajuan Anda',
+            'pelayanan' => Pelayanan::where('id_user', Auth::user()->id)->get(),
+        ];
+        return view('pages/pengajuan_user', $data);
+    });
+    Route::get('/pengajuan_layanan/{id}', function ($id) {
+        $layanan = Layanan::find($id);
+        $data = [
+            'title' => 'Ajukan Layanan : ' . $layanan->nama_layanan,
+            'layanan' => $layanan,
+        ];
+        return view('pages/pengajuan', $data);
+    })->name('pengajuan_layanan');
+    //profile
+    Route::get('/profile_user', [ProfileController::class, 'profileUser'])->name('profile_user');
+    //pengajuan layanan
+    Route::post('/pengajuan_layanan/store',  [PelayananController::class, 'store'])->name('pengajuan_layanan.store');
+});
+Route::middleware(['auth:web', 'verified', 'role:Admin,Staff'])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     //akun managemen
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    //customers managemen
-    Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
-    Route::post('/customers/store',  [CustomerController::class, 'store'])->name('customers.store');
-    Route::get('/customers/edit/{id}',  [CustomerController::class, 'edit'])->name('customers.edit');
-    Route::delete('/customers/delete/{id}',  [CustomerController::class, 'destroy'])->name('customers.delete');
-    Route::get('/customers-datatable', [CustomerController::class, 'getCustomersDataTable']);
+    //laporan
+    Route::get('/report/pelayanan', [LaporanController::class, 'pelayanan'])->name('report.pelayanan');
+    Route::get('/report/pembayaran', [LaporanController::class, 'pembayaran'])->name('report.pembayaran');
+});
+Route::middleware(['auth:web', 'verified', 'role:Admin'])->group(function () {
+    //settings managemen
+    Route::get('/settings', [HomeController::class, 'settings'])->name('settings');
+    Route::post('/settings/store', [HomeController::class, 'storeSettings'])->name('settings.store');
     //layanans managemen
     Route::get('/layanan', [LayananController::class, 'index'])->name('layanan');
     Route::post('/layanan/store',  [LayananController::class, 'store'])->name('layanan.store');
     Route::get('/layanan/edit/{id}',  [LayananController::class, 'edit'])->name('layanan.edit');
+    Route::get('/layanan/berkas/{id}',  [LayananController::class, 'berkas'])->name('layanan.berkas');
+    Route::get('/layanan/formulir/{id}',  [LayananController::class, 'formulir'])->name('layanan.formulir');
     Route::delete('/layanan/delete/{id}',  [LayananController::class, 'destroy'])->name('layanan.delete');
     Route::get('/layanans-datatable', [LayananController::class, 'getLayanansDataTable']);
-});
-Route::middleware(['auth:web', 'role:Admin'])->group(function () {
+    //pelayanan managemen
+    Route::get('/pelayanan', [PelayananController::class, 'index'])->name('pelayanan');
+    Route::post('/pelayanan/store',  [PelayananController::class, 'store'])->name('pelayanan.store');
+    Route::get('/pelayanan/show/{id}',  [PelayananController::class, 'show'])->name('pelayanan.show');
+    Route::get('/pelayanan/terima/{id}',  [PelayananController::class, 'terima'])->name('pelayanan.terima');
+    Route::get('/pelayanan/tolak/{id}',  [PelayananController::class, 'tolak'])->name('pelayanan.tolak');
+    Route::delete('/pelayanan/delete/{id}',  [PelayananController::class, 'destroy'])->name('pelayanan.delete');
+    Route::get('/pelayanans-datatable', [PelayananController::class, 'getPelayanansDataTable']);
+    //biaya managemen
+    Route::get('/biaya', [PelayananController::class, 'biaya'])->name('biaya');
+    //berkas layanan managemen
+    Route::post('/berkas/store',  [LayananController::class, 'storeBerkas'])->name('berkas.store');
+    Route::get('/berkas/edit/{id}',  [LayananController::class, 'editBerkas'])->name('berkas.edit');
+    Route::delete('/berkas/delete/{id}',  [LayananController::class, 'destroyBerkas'])->name('berkas.delete');
+    Route::get('/berkas-datatable/{id}', [LayananController::class, 'getberkasDataTable']);
+    //formulir layanan managemen
+    Route::post('/formulir/store',  [LayananController::class, 'storeFormulir'])->name('formulir.store');
+    Route::get('/formulir/edit/{id}',  [LayananController::class, 'editFormulir'])->name('formulir.edit');
+    Route::delete('/formulir/delete/{id}',  [LayananController::class, 'destroyFormulir'])->name('formulir.delete');
+    Route::get('/formulir-datatable/{id}', [LayananController::class, 'getFormulirDataTable']);
     //user managemen
     Route::get('/users', [UserController::class, 'index'])->name('users');
+    Route::get('/customers', [UserController::class, 'customers'])->name('customers');
+    Route::get('/admins', [UserController::class, 'admins'])->name('admins');
+    Route::get('/staffs', [UserController::class, 'staffs'])->name('staffs');
     Route::post('/users/store',  [UserController::class, 'store'])->name('users.store');
     Route::get('/users/edit/{id}',  [UserController::class, 'edit'])->name('users.edit');
     Route::delete('/users/delete/{id}',  [UserController::class, 'destroy'])->name('users.delete');
     Route::get('/users-datatable', [UserController::class, 'getUsersDataTable']);
+    Route::get('/customers-datatable', [UserController::class, 'getCustomersDataTable']);
+    Route::get('/staffs-datatable', [UserController::class, 'getStaffsDataTable']);
+    Route::get('/admins-datatable', [UserController::class, 'getAdminsDataTable']);
 });

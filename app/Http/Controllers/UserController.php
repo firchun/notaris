@@ -18,13 +18,91 @@ class UserController extends Controller
     {
         $data = [
             'title' => 'Users',
-            'users' => User::all()
+            'users' => User::where('role', 'Admin')->get()
         ];
         return view('admin.users.index', $data);
+    }
+    public function admins()
+    {
+        $data = [
+            'title' => 'Akun Admin',
+            'users' => User::where('role', 'Admin')->get()
+        ];
+        return view('admin.users.index', $data);
+    }
+    public function staffs()
+    {
+        $data = [
+            'title' => 'Akun Staff',
+            'users' => User::where('role', 'Staff')->get()
+        ];
+        return view('admin.users.staff', $data);
+    }
+    public function customers()
+    {
+        $data = [
+            'title' => 'Akun Pelanggan',
+            'users' => User::where('role', 'User')->get(),
+        ];
+        return view('admin.users.users', $data);
     }
     public function getUsersDataTable()
     {
         $users = User::select(['id', 'name', 'email', 'created_at', 'updated_at', 'role', 'avatar'])->orderByDesc('id');
+
+        return Datatables::of($users)
+            ->addColumn('avatar', function ($user) {
+                return view('admin.users.components.avatar', compact('user'));
+            })
+            ->addColumn('action', function ($user) {
+                return view('admin.users.components.actions', compact('user'));
+            })
+            ->addColumn('role', function ($user) {
+                return '<span class="badge bg-label-primary">' . $user->role . '</span>';
+            })
+
+            ->rawColumns(['action', 'role', 'avatar'])
+            ->make(true);
+    }
+    public function getAdminsDataTable()
+    {
+        $users = User::select(['id', 'name', 'email', 'created_at', 'updated_at', 'role', 'avatar'])->where('role', 'Admin')->orderByDesc('id');
+
+        return Datatables::of($users)
+            ->addColumn('avatar', function ($user) {
+                return view('admin.users.components.avatar', compact('user'));
+            })
+            ->addColumn('action', function ($user) {
+                return view('admin.users.components.actions', compact('user'));
+            })
+            ->addColumn('role', function ($user) {
+                return '<span class="badge bg-label-primary">' . $user->role . '</span>';
+            })
+
+            ->rawColumns(['action', 'role', 'avatar'])
+            ->make(true);
+    }
+    public function getCustomersDataTable()
+    {
+        $users = User::select(['id', 'name', 'email', 'created_at', 'updated_at', 'role', 'avatar'])->where('role', 'User')->orderByDesc('id');
+
+        return Datatables::of($users)
+            ->addColumn('avatar', function ($user) {
+                return view('admin.users.components.avatar', compact('user'));
+            })
+            ->addColumn('action', function ($user) {
+                return view('admin.users.components.actions', compact('user'));
+            })
+            ->addColumn('role', function ($user) {
+                return '<span class="badge bg-label-primary">' . $user->role . '</span>';
+            })
+
+            ->rawColumns(['action', 'role', 'avatar'])
+            ->make(true);
+    }
+    public function getStaffsDataTable()
+    {
+        $users = User::select(['id', 'name', 'email', 'created_at', 'updated_at', 'role', 'avatar'])->where('role', 'Staff')->orderByDesc('id');
 
         return Datatables::of($users)
             ->addColumn('avatar', function ($user) {

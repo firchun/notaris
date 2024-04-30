@@ -35,7 +35,9 @@
                                 <th style="width: 100px;">Thumbnail</th>
                                 <th>Nama Layanan</th>
                                 <th>Jenis Layanan</th>
-                                <th>Action</th>
+                                <th>Berkas</th>
+                                <th>Syarat/Form</th>
+                                <th style="width: 250px;">Action</th>
                             </tr>
                         </thead>
 
@@ -45,6 +47,8 @@
                                 <th>Thumbnail</th>
                                 <th>Nama Layanan</th>
                                 <th>Jenis Layanan</th>
+                                <th>Berkas</th>
+                                <th>Syarat/Form</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>

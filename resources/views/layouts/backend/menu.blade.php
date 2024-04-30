@@ -49,14 +49,11 @@
             </span>
             <span class="app-brand-text demo menu-text fw-bolder ms-2">{{ env('APP_NAME') ?? 'Laravel' }}</span>
         </a>
-
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm align-middle"></i>
         </a>
     </div>
-
     <div class="menu-inner-shadow"></div>
-
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
         <li class="menu-header small text-uppercase">
@@ -69,7 +66,7 @@
             </a>
         </li>
         <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">customers</span>
+            <span class="menu-header-text">master data</span>
         </li>
         <li class="menu-item {{ request()->is('layanan') ? 'active' : '' }}">
             <a href="{{ url('/layanan') }}" class="menu-link">
@@ -78,12 +75,68 @@
             </a>
         </li>
         <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">users</span>
+            <span class="menu-header-text">pelayanan</span>
         </li>
-        <li class="menu-item {{ request()->is('users') ? 'active' : '' }}">
-            <a href="{{ url('/users') }}" class="menu-link">
+        <li class="menu-item {{ request()->is('pelayanan') ? 'active' : '' }}">
+            <a href="{{ url('/pelayanan') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-folder"></i>
+                <div data-i18n="Analytics">pengajuan</div>
+            </a>
+        </li>
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Biaya</span>
+        </li>
+        <li class="menu-item {{ request()->is('biaya') ? 'active' : '' }}">
+            <a href="{{ url('/biaya') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-folder"></i>
+                <div data-i18n="Analytics">Biaya Pengajuan</div>
+            </a>
+        </li>
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">pengguna</span>
+        </li>
+        <li class="menu-item {{ request()->is('customers') ? 'active' : '' }}">
+            <a href="{{ url('/customers') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-user"></i>
-                <div data-i18n="Analytics">Users</div>
+                <div data-i18n="Analytics">Customers</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('staffs') ? 'active' : '' }}">
+
+            <a href="{{ url('/staffs') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div data-i18n="Analytics">Staff</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('admins') ? 'active' : '' }}">
+
+            <a href="{{ url('/admins') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div data-i18n="Analytics">Adminisitrator</div>
+            </a>
+        </li>
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">pengaturan</span>
+        </li>
+        <li class="menu-item {{ request()->is('settings') ? 'active' : '' }}">
+            <a href="{{ url('/settings') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-cog"></i>
+                <div data-i18n="cog">pengaturan</div>
+            </a>
+        </li>
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Laporan</span>
+        </li>
+        <li class="menu-item {{ request()->is('report/pelayanan') ? 'active' : '' }}">
+            <a href="{{ url('/report/pelayanan') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-file"></i>
+                <div data-i18n="Analytics">Pengajuan</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('report/pembayaran') ? 'active' : '' }}">
+            <a href="{{ url('/report/pembayaran') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-file"></i>
+                <div data-i18n="Analytics">Pembayaran</div>
             </a>
         </li>
         <li class="menu-header small text-uppercase">

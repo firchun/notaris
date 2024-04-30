@@ -18,8 +18,8 @@
                             <i class="fas fa-map-marker-alt mr-0"></i>
                         </span>
                         <div class="ts-service-box-content">
-                            <h4>Visit Our Office</h4>
-                            <p>9051 Constra Incorporate, USA</p>
+                            <h4>Alamat Kantor</h4>
+                            <p>{{ $setting ? $setting->alamat : '-' }}</p>
                         </div>
                     </div>
                 </div><!-- Col 1 end -->
@@ -30,8 +30,8 @@
                             <i class="fa fa-envelope mr-0"></i>
                         </span>
                         <div class="ts-service-box-content">
-                            <h4>Email Us</h4>
-                            <p>office@Constra.com</p>
+                            <h4>Alamat Email</h4>
+                            <p>{{ $setting ? $setting->email : '-' }}</p>
                         </div>
                     </div>
                 </div><!-- Col 2 end -->
@@ -42,8 +42,8 @@
                             <i class="fa fa-phone-square mr-0"></i>
                         </span>
                         <div class="ts-service-box-content">
-                            <h4>Call Us</h4>
-                            <p>(+9) 847-291-4353</p>
+                            <h4>Nomor HP/WA</h4>
+                            <p>{{ $setting ? $setting->no_hp : '-' }}</p>
                         </div>
                     </div>
                 </div><!-- Col 3 end -->

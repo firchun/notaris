@@ -8,26 +8,28 @@
             </div>
             <div class="modal-body">
                 <!-- Form for Create and Edit -->
-                <form id="userForm">
-                    <input type="hidden" id="formCustomerId" name="id">
+                <form id="layananForm">
+                    <input type="hidden" id="formLayananId" name="id">
                     <div class="mb-3">
-                        <label for="formNamaLayanan" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="formNamaLayanan" name="name" required>
+                        <label for="formNamaLayanan" class="form-label">Nama Layanan</label>
+                        <input type="text" class="form-control" id="formNamaLayanan" name="nama_layanan" required>
                     </div>
                     <div class="mb-3">
-                        <label for="formCustomerPhone" class="form-label">Phone</label>
-                        <input type="number" class="form-control" id="formCustomerPhone" name="phone" required>
+                        <label for="formJenisLayanan" class="form-label">Jenis Layanan</label>
+                        <select id="formJenisLayanan" name="jenis_layanan" class="form-select">
+                            <option value="PPAT">PPAT</option>
+                            <option value="Notaris">Notaris</option>
+                        </select>
                     </div>
                     <div class="mb-3">
-                        <label for="formCustomerAddress" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="formCustomerAddress" name="address" required>
+                        <label for="formKeteranganLayanan" class="form-label">Keterangan Layanan</label>
+                        <textarea class="form-control" name="deskripsi" id="formKeteranganLayanan"></textarea>
                     </div>
-
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="saveCustomerBtn">Save</button>
+                <button type="button" class="btn btn-primary" id="saveLayananBtn">Save</button>
             </div>
         </div>
     </div>
@@ -57,6 +59,11 @@
                         <label for="formKeteranganLayanan" class="form-label">Keterangan Layanan</label>
                         <textarea class="form-control" name="deskripsi" id="formKeteranganLayanan"></textarea>
                     </div>
+                    {{-- <div class="mb-3">
+                        <label for="formKeteranganLayanan" class="form-label">Keterangan Layanan</label>
+                        <div id="editorCreate"></div>
+                        <input type="hidden" name="deskripsi" id="#hidden-editor-create">
+                    </div> --}}
                 </form>
             </div>
             <div class="modal-footer">
@@ -66,3 +73,22 @@
         </div>
     </div>
 </div>
+{{-- <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.4/dist/quill.js"></script>
+<script>
+    var editor1 = new Quill('#editor', {
+        theme: 'snow' // Tema Quill yang ingin Anda gunakan (snow atau bubble)
+    });
+    var form1 = document.querySelector('#layananForm');
+    form1.onsubmit = function() {
+        var editorContent = document.querySelector('#editor .ql-editor').innerHTML;
+        document.querySelector('#hidden-editor').value = editorContent;
+    };
+    var editor2 = new Quill('#editorCreate', {
+        theme: 'snow' // Tema Quill yang ingin Anda gunakan (snow atau bubble)
+    });
+    var form2 = document.querySelector('#createLayananForm');
+    form2.onsubmit = function() {
+        var editorContent = document.querySelector('#editorCreate .ql-editor').innerHTML;
+        document.querySelector('#hidden-editor-create').value = editorContent;
+    };
+</script> --}}

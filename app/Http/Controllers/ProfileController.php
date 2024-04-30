@@ -21,6 +21,13 @@ class ProfileController extends Controller
         ];
         return view('admin.akun.profile', $data);
     }
+    public function profileUser()
+    {
+        $data = [
+            'title' => 'Profile',
+        ];
+        return view('pages.akun_user', $data);
+    }
 
     public function update(Request $request)
     {
@@ -48,7 +55,7 @@ class ProfileController extends Controller
 
             $user->save();
 
-            return redirect()->route('profile')->withSuccess('Profile  berhasil di ubah.');
+            return redirect()->back()->withSuccess('Profile  berhasil di ubah.');
         } catch (\Exception $e) {
             return redirect()->back()->with('danger', 'Terjadi kesalahan: ' . $e->getMessage());
         }

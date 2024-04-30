@@ -20,7 +20,7 @@
            </div><!-- Container end -->
        </div>
 
-       <div class="site-navigation">
+       <div class="site-navigation ">
            <div class="container">
                <div class="row">
                    <div class="col-lg-12">
@@ -33,16 +33,29 @@
 
                            <div id="navbar-collapse" class="collapse navbar-collapse">
                                <ul class="nav navbar-nav mr-auto">
-                                   <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Beranda</a></li>
-                                   <li class="nav-item"><a class="nav-link"
+                                   <li class="nav-item {{ request()->is('/') ? 'active' : '' }}"><a class="nav-link"
+                                           href="{{ url('/') }}">Beranda</a></li>
+                                   {{-- <li class="nav-item"><a class="nav-link"
                                            href="{{ url('/pengajuan_layanan') }}">Pengajuan Layanan</a>
+                                   </li> --}}
+                                   <li class="nav-item {{ request()->is('tracking') ? 'active' : '' }}"><a
+                                           class="nav-link" href="{{ url('/tracking') }}">Tracking
+                                           Dokumen</a>
                                    </li>
-                                   <li class="nav-item"><a class="nav-link" href="{{ url('/tracking') }}">Tracking</a>
-                                   </li>
-                                   <li class="nav-item"><a class="nav-link" href="{{ url('/tentang_kami') }}">Tentang
+                                   <li class="nav-item {{ request()->is('tentang_kami') ? 'active' : '' }}"><a
+                                           class="nav-link" href="{{ url('/tentang_kami') }}">Tentang
                                            Kami</a></li>
-                                   <li class="nav-item"><a class="nav-link" href="{{ url('/kontak_kami') }}">Kontak
+                                   <li class="nav-item {{ request()->is('kontak_kami') ? 'active' : '' }}"><a
+                                           class="nav-link" href="{{ url('/kontak_kami') }}">Kontak
                                            Kami</a></li>
+                                   @if (Auth::check())
+                                       @if (Auth::user()->role == 'User')
+                                           <li class="nav-item {{ request()->is('pengajuan_user') ? 'active' : '' }}">
+                                               <a class="nav-link " href="{{ url('/pengajuan_user') }}">Pengajuan
+                                                   Anda</a>
+                                           </li>
+                                       @endif
+                                   @endif
                                </ul>
                            </div>
                        </nav>
@@ -53,7 +66,20 @@
 
                <div style="position: absolute;right:18px;top:10px;">
                    @auth
-                       <a class="btn btn-primary" href="{{ url('/home') }}">Dashboard</a>
+                       @if (Auth::user()->role == 'User')
+                           <a class="btn btn-warning" href="{{ url('/profile_user') }}">Akun</a>
+                           <a class="btn btn-danger" href="{{ route('logout') }}"
+                               onclick="event.preventDefault();
+                                      document.getElementById('logout-form').submit();">
+                               <i class="bx bx-power-off me-2 text-danger"></i>
+                               <span class="align-middle">Log Out</span>
+                           </a>
+                           <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                               @csrf
+                           </form>
+                       @else
+                           <a class="btn btn-primary" href="{{ url('/home') }}">Dashboard</a>
+                       @endif
                    @else
                        <a class="btn btn-primary" href="{{ route('login') }}">Login</a>
                    @endauth

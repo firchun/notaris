@@ -40,6 +40,7 @@
             display: block;
         }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.4/dist/quill.snow.css" rel="stylesheet" />
     <!-- Vendors CSS -->
     <link rel="stylesheet"
         href="{{ asset('backend_theme/') }}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
@@ -144,6 +145,7 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     </script>
     <!-- Place this tag in your head or just before your close body tag. -->
+
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <script>

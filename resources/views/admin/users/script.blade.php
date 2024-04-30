@@ -5,7 +5,7 @@
                 processing: true,
                 serverSide: true,
                 responsive: true,
-                ajax: '{{ url('users-datatable') }}',
+                ajax: '{{ url('admins-datatable') }}',
                 columns: [{
                         data: 'id',
                         name: 'id'
@@ -33,6 +33,68 @@
                     }
                 ]
             });
+            $('#datatable-customers').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: '{{ url('customers-datatable') }}',
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'avatar',
+                        name: 'avatar'
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
+
+                    {
+                        data: 'role',
+                        name: 'role'
+                    },
+
+                ]
+            });
+            $('#datatable-staffs').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: '{{ url('staffs-datatable') }}',
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'avatar',
+                        name: 'avatar'
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
+
+                    {
+                        data: 'role',
+                        name: 'role'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action'
+                    }
+                ]
+            });
+
             $('.create-new').click(function() {
                 $('#create').modal('show');
             });

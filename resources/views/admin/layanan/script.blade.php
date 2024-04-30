@@ -23,6 +23,14 @@
                         name: 'jenis'
                     },
                     {
+                        data: 'berkas',
+                        name: 'berkas'
+                    },
+                    {
+                        data: 'formulir',
+                        name: 'formulir'
+                    },
+                    {
                         data: 'action',
                         name: 'action'
                     }
@@ -40,10 +48,9 @@
                     url: '/layanan/edit/' + id,
                     success: function(response) {
                         $('#customersModalLabel').text('Edit Customer');
-                        $('#formCustomerId').val(response.id);
-                        $('#formCustomerName').val(response.name);
-                        $('#formCustomerPhone').val(response.phone);
-                        $('#formCustomerAddress').val(response.address);
+                        $('#formLayananId').val(response.id);
+                        $('#formNamaLayanan').val(response.nama_layanan);
+                        $('#formKeteranganLayanan').val(response.deskripsi);
                         $('#customersModal').modal('show');
                     },
                     error: function(xhr) {
@@ -51,12 +58,20 @@
                     }
                 });
             };
-            $('#saveCustomerBtn').click(function() {
-                var formData = $('#userForm').serialize();
+            window.berkasLayanan = function(id) {
+                var url = "/layanan/berkas/" + id;
+                window.location.href = url;
+            };
+            window.syaratLayanan = function(id) {
+                var url = "/layanan/formulir/" + id;
+                window.location.href = url;
+            };
+            $('#saveLayananBtn').click(function() {
+                var formData = $('#layananForm').serialize();
 
                 $.ajax({
                     type: 'POST',
-                    url: '/customers/store',
+                    url: '/layanan/store',
                     data: formData,
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -64,7 +79,7 @@
                     success: function(response) {
                         alert(response.message);
                         // Refresh DataTable setelah menyimpan perubahan
-                        $('#datatable-customers').DataTable().ajax.reload();
+                        $('#datatable-layanans').DataTable().ajax.reload();
                         $('#customersModal').modal('hide');
                     },
                     error: function(xhr) {
@@ -105,7 +120,7 @@
                         },
                         success: function(response) {
                             // alert(response.message);
-                            $('#datatable-customers').DataTable().ajax.reload();
+                            $('#datatable-layanans').DataTable().ajax.reload();
                         },
                         error: function(xhr) {
                             alert('Terjadi kesalahan: ' + xhr.responseText);
