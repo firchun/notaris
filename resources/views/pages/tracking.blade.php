@@ -61,7 +61,7 @@
                     url: '/dokumen/' + nomor,
                     success: function(response) {
                         var pelayanan = response;
-                        var lastStatus = pelayanan.status[pelayanan.status.length - 1];
+                        var lastStatus = pelayanan.status[pelayanan.status.length - 1].status;
                         var tableHtml =
                             '<h4 class="text-center">Informasi Dokumen</h4><table class="table table-hover table-bordered">' +
                             '<tr>' +
