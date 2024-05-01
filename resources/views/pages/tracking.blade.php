@@ -61,6 +61,7 @@
                     url: '/dokumen/' + nomor,
                     success: function(response) {
                         var pelayanan = response;
+                        var lastStatus = pelayanan.status[pelayanan.status.length - 1];
                         var tableHtml =
                             '<h4 class="text-center">Informasi Dokumen</h4><table class="table table-hover table-bordered">' +
                             '<tr>' +
@@ -77,7 +78,7 @@
                             '</tr>' +
                             '<tr>' +
                             '<td>Status</td>' +
-                            '<td>' + pelayanan.status[0].status + '</td>' +
+                            '<td>' + lastStatus + '</td>' +
                             '</tr>';
                         tableHtml += '</table>';
                         $('#statusDokumen').html(tableHtml);
