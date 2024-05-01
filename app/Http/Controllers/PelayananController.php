@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BerkasAkhir;
 use App\Models\BerkasLayanan;
 use App\Models\BerkasPelayanan;
 use App\Models\FormulirPelayanan;
@@ -35,7 +36,8 @@ class PelayananController extends Controller
 
         return Datatables::of($pelayanan)
             ->addColumn('action', function ($pelayanan) {
-                return view('admin.pelayanan.components.actions', compact('pelayanan'));
+                $cek_berkas = BerkasAkhir::where('id_pelayanan', $pelayanan->id);
+                return view('admin.pelayanan.components.actions', compact('pelayanan', 'cek_berkas'));
             })
             ->addColumn('action_biaya', function ($pelayanan) {
                 return view('admin.biaya.components.actions', compact('pelayanan'));

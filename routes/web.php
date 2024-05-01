@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BerkasAkhirController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LaporanController;
@@ -55,7 +56,7 @@ Route::get('/tracking', function () {
 });
 Route::get('/dokumen/{no_dokumen}', [HomeController::class, 'tracking'])->name('dokumen');
 Route::get('/setujui-dokumen/{id}', [PelayananController::class, 'setujuiDokumen'])->name('setujui-dokumen');
-
+Route::get('berkas/get-api-berkas/{id}',  [BerkasAkhirController::class, 'getBerkasAkhir'])->name('berkas.api-berkas');
 Auth::routes(['verify' => true]);
 Route::middleware(['auth:web', 'verified'])->group(function () {
 
@@ -96,6 +97,9 @@ Route::middleware(['auth:web', 'verified', 'role:Admin,Staff,Keuangan'])->group(
     Route::get('/pelayanans-datatable', [PelayananController::class, 'getPelayanansDataTable']);
 });
 Route::middleware(['auth:web', 'verified', 'role:Staff'])->group(function () {
+    //upload berkas akhir
+    Route::post('berkas/upload-berkas',  [BerkasAkhirController::class, 'uploadBerkas'])->name('berkas.upload-berkas');
+    Route::post('berkas/terima-berkas',  [BerkasAkhirController::class, 'terimaBerkas'])->name('berkas.terima-berkas');
     //pelayanan managemen
     Route::post('/pelayanan/store',  [PelayananController::class, 'store'])->name('pelayanan.store');
     Route::get('/pelayanan/terima/{id}',  [PelayananController::class, 'terima'])->name('pelayanan.terima');

@@ -59,6 +59,60 @@
                     }
                 });
             });
+            window.terimaBerkas = function(id) {
+                $('#terimaBerkas').modal('show');
+                $('#idPelayanan').val(id);
+            };
+            window.uploadBerkas = function(id) {
+                $('#uploadBerkas').modal('show');
+                $('#idPelayananUploadBerkas').val(id);
+            };
+            $('#btnUploadBerkas').click(function() {
+                var formData = new FormData($('#formUploadBerkas')[0]);
+                $.ajax({
+                    type: 'POST',
+                    url: '/berkas/upload-berkas',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        alert(response.message);
+                        $('#idPelayanan').val('');
+                        $('#formTermiaBerkasFoto').val('');
+                        $('#datatable-pelayanan').DataTable().ajax.reload();
+                        $('#uploadBerkas').modal('hide');
+                    },
+                    error: function(xhr) {
+                        alert('Terjadi kesalahan: ' + xhr.responseText);
+                    }
+                });
+            });
+            $('#btnTerimaBerkas').click(function() {
+                var formData = new FormData($('#formTerimaBerkas')[0]);
+                $.ajax({
+                    type: 'POST',
+                    url: '/berkas/terima-berkas',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        alert(response.message);
+                        $('#idPelayanan').val('');
+                        $('#formTermiaBerkasFoto').val('');
+                        $('#datatable-pelayanan').DataTable().ajax.reload();
+                        $('#terimaBerkas').modal('hide');
+                    },
+                    error: function(xhr) {
+                        alert('Terjadi kesalahan: ' + xhr.responseText);
+                    }
+                });
+            });
             window.lihatPengajuan = function(id) {
                 $('#loadingIcon').removeClass('d-none');
                 $('#buttonText').addClass('d-none');
@@ -113,8 +167,42 @@
                             $('#btnTolak').hide();
                         }
 
-                        $('#customersModal .modal-body').html(tableHtml);
+                        $('#customersModal .body').html(tableHtml);
                         $('#customersModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        alert('Terjadi kesalahan: ' + xhr.responseText);
+                    }
+                });
+                $.ajax({
+                    type: 'GET',
+                    url: 'berkas/get-api-berkas/' + id,
+                    success: function(response) {
+                        var berkasUrl = "{{ Storage::url('') }}" + response.berkas_akhir;
+                        berkasUrl = berkasUrl.replace('public/', '');
+
+                        var fotoUrl = "{{ Storage::url('') }}" + response.foto_penerimaan;
+                        fotoUrl = fotoUrl.replace('public/', '');
+                        var berkasView = '<table class="table table-striped table-bordered">' +
+                            '<tr>' +
+                            '<td>Berkas Akhir</td>' +
+                            '<td><a target="__blank" href="' + berkasUrl +
+                            '" class="btn btn-success">Lihat' +
+                            'Berkas</a></td>' +
+                            '</tr>';
+
+                        if (response.diterima == 1) {
+                            berkasView +=
+                                '<tr>' +
+                                '<td>Foto penerimaan</td>' +
+                                '<td><img src="' + fotoUrl +
+                                '" style="width:200px;height:200px;object-fit:cover;"></td>' +
+                                '</tr>';
+
+                        }
+                        berkasView += '</table>';
+
+                        $('#customersModal .berkas').html(berkasView);
                     },
                     error: function(xhr) {
                         alert('Terjadi kesalahan: ' + xhr.responseText);
