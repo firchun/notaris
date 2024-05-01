@@ -154,7 +154,7 @@ class PelayananController extends Controller
         $status = new PelayananStatus();
         $status->id_pelayanan = $id;
         $pelayanan->id_staff = Auth::id();
-        $status->status = 'Berkas dalam pengerjaan';
+        $status->status = 'Proses perhitungan biaya';
         $status->save();
 
         return response()->json(['message' => 'Data berhasil diverifikasi']);

@@ -94,7 +94,7 @@
                                 <td>Layanan </td>
                                 <td>{{ $item->layanan->nama_layanan }}</td>
                             </tr>
-                            @foreach (App\Models\Formulirpelayanan::where('id_pelayanan', $item->id)->get() as $itemForm)
+                            @foreach (App\Models\FormulirPelayanan::where('id_pelayanan', $item->id)->get() as $itemForm)
                                 <tr>
                                     <td>{{ $itemForm->formulir_layanan->nama_formulir }} </td>
                                     <td>{{ $itemForm->isi_formulir }}</td>
