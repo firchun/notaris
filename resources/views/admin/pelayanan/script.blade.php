@@ -60,10 +60,14 @@
                 });
             });
             window.lihatPengajuan = function(id) {
+                $('#loadingIcon').removeClass('d-none');
+                $('#buttonText').addClass('d-none');
                 $.ajax({
                     type: 'GET',
                     url: '/pelayanan/show/' + id,
                     success: function(response) {
+                        $('#loadingIcon').addClass('d-none');
+                        $('#buttonText').removeClass('d-none');
                         var tableHtml = '<table class="table table-striped table-bordered">' +
                             '<tr>' +
                             '<td>Nomor Dokumen</td>' +
@@ -89,8 +93,8 @@
                         tableHtml +=
                             '<tr><td colspan="2"><strong>Berkas</strong></td></tr>';
                         $.each(response.berkas, function(index, itemBerkas) {
-                            var berkasUrl = "{{ Storage::url(':berkasPath') }}";
-                            berkasUrl = berkasUrl.replace(':berkasPath', itemBerkas.berkas);
+                            var berkasUrl = "{{ Storage::url('') }}" + itemBerkas.berkas;
+                            berkasUrl = berkasUrl.replace('public/', '');
                             tableHtml += '<tr>' +
                                 '<td>' + itemBerkas.berkas_layanan.nama_berkas + '</td>' +
                                 '<td><a target="__blank" href="' + berkasUrl +

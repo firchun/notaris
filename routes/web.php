@@ -5,10 +5,12 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\PelayananController;
+use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Models\Layanan;
 use App\Models\Pelayanan;
+use App\Models\PembayaranPelayanan;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +54,7 @@ Route::get('/tracking', function () {
     return view('pages/tracking', ['title' => $title]);
 });
 Route::get('/dokumen/{no_dokumen}', [HomeController::class, 'tracking'])->name('dokumen');
+Route::get('/setujui-dokumen/{id}', [PelayananController::class, 'setujuiDokumen'])->name('setujui-dokumen');
 
 Auth::routes(['verify' => true]);
 Route::middleware(['auth:web', 'verified'])->group(function () {
@@ -106,6 +109,7 @@ Route::middleware(['auth:web', 'verified', 'role:Admin'])->group(function () {
     Route::get('/pelayanan/show/{id}',  [PelayananController::class, 'show'])->name('pelayanan.show');
     Route::get('/pelayanan/terima/{id}',  [PelayananController::class, 'terima'])->name('pelayanan.terima');
     Route::get('/pelayanan/tolak/{id}',  [PelayananController::class, 'tolak'])->name('pelayanan.tolak');
+    Route::post('/pelayanan/input-biaya',  [PelayananController::class, 'inputBiaya'])->name('pelayanan.input-biaya');
     Route::delete('/pelayanan/delete/{id}',  [PelayananController::class, 'destroy'])->name('pelayanan.delete');
     Route::get('/pelayanans-datatable', [PelayananController::class, 'getPelayanansDataTable']);
     //biaya managemen
@@ -132,4 +136,8 @@ Route::middleware(['auth:web', 'verified', 'role:Admin'])->group(function () {
     Route::get('/customers-datatable', [UserController::class, 'getCustomersDataTable']);
     Route::get('/staffs-datatable', [UserController::class, 'getStaffsDataTable']);
     Route::get('/admins-datatable', [UserController::class, 'getAdminsDataTable']);
+    //pembayaran
+    Route::get('/pembayaran-datatable/{id}', [PembayaranController::class, 'getPembayaranDataTable']);
+    Route::post('/pembayaran/store',  [PembayaranController::class, 'store'])->name('pembayaran.store');
+    Route::post('/pembayaran/delete/{id}',  [PembayaranController::class, 'destroy'])->name('pembayaran.delete');
 });

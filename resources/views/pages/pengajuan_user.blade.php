@@ -38,6 +38,7 @@
                         <th>Layanan</th>
                         <th>Status</th>
                         <th>Kelengkapan</th>
+                        <th>Persetujuan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +56,14 @@
                                     data-target="#serviceDetailsModal{{ $item->id }}">
                                     Lihat
                                 </a>
+                            </td>
+                            <td>
+                                @if ($item->biaya != 0 && $item->is_continue == 0)
+                                    <a class="btn btn-primary" href="#" aria-label="service-details"
+                                        data-toggle="modal" data-target="#persetujuan{{ $item->id }}">
+                                        Lanjutkan
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -103,6 +112,11 @@
                                 <td>Tanggal pengajuan </td>
                                 <td>{{ $item->created_at->format('d F Y') }}</td>
                             </tr>
+
+                            <tr>
+                                <td>Biaya pengurusan </td>
+                                <td>{{ $item->biaya != 0 ? 'Rp ' . number_format($item->biaya) : 'Menunggu..' }}</td>
+                            </tr>
                             <tr>
                                 <td>Status pengajuan </td>
                                 <td>{{ App\Models\PelayananStatus::where('id_pelayanan', $item->id)->latest()->first()->status }}
@@ -128,6 +142,30 @@
                     </div>
                     <div class="modal-footer">
 
+                        <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="persetujuan{{ $item->id }}" tabindex="-1"
+            aria-labelledby="serviceDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="serviceDetailsModalLabel">Persetujuan melanjutkan dokumen :
+                            {{ $item->no_dokumen }}</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Klik <b>Setujui</b> untuk melanjutkan pengurusan dokumen dengan biaya :
+                            <b class="text-danger"> Rp {{ number_format($item->biaya) }}</b>
+                        </p>
+                        <p>
+                            Untuk melakukan pembayaran, bisa datang langsung ke kantor atau bisa dengan transfer pada bank
+                            yang tersedia..
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="{{ url('/setujui-dokumen', $item->id) }}" class="btn btn-success btn-md">Setujui</a>
                         <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>

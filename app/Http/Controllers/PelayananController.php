@@ -37,8 +37,16 @@ class PelayananController extends Controller
             ->addColumn('action', function ($pelayanan) {
                 return view('admin.pelayanan.components.actions', compact('pelayanan'));
             })
+            ->addColumn('action_biaya', function ($pelayanan) {
+                return view('admin.biaya.components.actions', compact('pelayanan'));
+            })
             ->addColumn('date', function ($pelayanan) {
                 return $pelayanan->created_at->format('d F Y');
+            })
+            ->addColumn('biaya', function ($pelayanan) {
+                $warna = $pelayanan->is_paid == 0 ? 'text-danger' : 'text-success';
+                $text = $pelayanan->is_paid == 0 ? 'Belum Lunas' : 'LUNAS';
+                return number_format($pelayanan->biaya) . '<br> <span class="' . $warna . '">' . $text . '</span>';
             })
             ->addColumn('pemohon', function ($pelayanan) {
                 return '<strong>' . $pelayanan->nama_pemohon . '</strong><br><small class="text-muted">' . $pelayanan->pemohon->email . '</small>';
@@ -46,7 +54,7 @@ class PelayananController extends Controller
             ->addColumn('status', function ($pelayanan) {
                 return PelayananStatus::where('id_pelayanan', $pelayanan->id)->latest()->first()->status;
             })
-            ->rawColumns(['action', 'status', 'pemohon', 'date'])
+            ->rawColumns(['action', 'action_biaya', 'status', 'pemohon', 'date', 'biaya'])
             ->make(true);
     }
     public function store(Request $request)
@@ -165,5 +173,37 @@ class PelayananController extends Controller
         $status->save();
 
         return response()->json(['message' => 'Data berhasil ditolak']);
+    }
+    public function inputBiaya(Request $request)
+    {
+        $biaya = $request->input('biaya');
+        $id = $request->input('id');
+
+        $pelayanan = Pelayanan::find($id);
+        $pelayanan->biaya = $biaya;
+        $pelayanan->update();
+
+        $status = new PelayananStatus();
+        $status->id_pelayanan = $id;
+        $pelayanan->id_staff = Auth::user()->id;
+        $status->status = 'Menunggu persetujuan kelanjutan dokumen';
+        $status->save();
+
+        return response()->json(['message' => 'Biaya berhasil diinput']);
+    }
+    public function setujuiDokumen($id)
+    {
+
+        $pelayanan = Pelayanan::find($id);
+        $pelayanan->is_continue = 1;
+        $pelayanan->update();
+
+        $status = new PelayananStatus();
+        $status->id_pelayanan = $id;
+        $pelayanan->id_staff = Auth::user()->id;
+        $status->status = 'Proses pengurusan dokumen';
+        $status->save();
+        session()->flash('success', 'Berhasil menyetujui layanan');
+        return redirect()->back();
     }
 }
