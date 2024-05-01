@@ -16,25 +16,38 @@ class UserController extends Controller
 
     public function index()
     {
+        $role = [
+            'Admin' => 'Admin'
+        ];
         $data = [
             'title' => 'Users',
-            'users' => User::where('role', 'Admin')->get()
+            'users' => User::where('role', 'Admin')->get(),
+            'role' => $role,
         ];
         return view('admin.users.index', $data);
     }
     public function admins()
     {
+        $role = [
+            'Admin' => 'Admin'
+        ];
         $data = [
             'title' => 'Akun Admin',
-            'users' => User::where('role', 'Admin')->get()
+            'users' => User::where('role', 'Admin')->get(),
+            'role' => $role,
         ];
         return view('admin.users.index', $data);
     }
     public function staffs()
     {
+        $role = [
+            'Staff' => 'Staff',
+            'Keuangan' => 'Staff Keuangan'
+        ];
         $data = [
             'title' => 'Akun Staff',
-            'users' => User::where('role', 'Staff')->get()
+            'users' => User::where('role', 'Staff')->get(),
+            'role' => $role,
         ];
         return view('admin.users.staff', $data);
     }
@@ -102,7 +115,7 @@ class UserController extends Controller
     }
     public function getStaffsDataTable()
     {
-        $users = User::select(['id', 'name', 'email', 'created_at', 'updated_at', 'role', 'avatar'])->where('role', 'Staff')->orderByDesc('id');
+        $users = User::select(['id', 'name', 'email', 'created_at', 'updated_at', 'role', 'avatar'])->whereIn('role', ['Staff', 'Keuangan'])->orderByDesc('id');
 
         return Datatables::of($users)
             ->addColumn('avatar', function ($user) {
@@ -129,6 +142,7 @@ class UserController extends Controller
             $request->validate([
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'role' => ['required', 'string', 'max:255'],
             ]);
         }
 
@@ -158,7 +172,7 @@ class UserController extends Controller
             $message = 'user created successfully';
         }
 
-        return response()->json(['message' => $message]);
+        return response()->json(['message' => $message, 'data' => $usersData]);
     }
     public function edit($id)
     {

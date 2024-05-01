@@ -10,6 +10,12 @@
                         <h5 class="card-title mb-0">{{ $title ?? 'Title' }}</h5>
                     </div>
                     <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                        <button class="btn btn-secondary refresh btn-default" type="button">
+                            <span>
+                                <i class="bx bx-sync me-sm-1"> </i>
+                                <span class="d-none d-sm-inline-block"></span>
+                            </span>
+                        </button>
                     </div>
                 </div>
                 <div class="card-datatable table-responsive">

@@ -21,9 +21,9 @@
                     <div class="mb-3">
                         <label for="formUserRole" class="form-label">Role</label>
                         <select class="form-control" id="formUserRole" name="role">
-                            <option value="User">User</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Operator">Operator</option>
+                            @foreach ($role as $key => $user)
+                                <option value="{{ $key }}">{{ $user }}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -57,9 +57,9 @@
                     <div class="mb-3">
                         <label for="formUserRole" class="form-label">Role</label>
                         <select class="form-control" id="formUserRole" name="role">
-                            <option value="User">User</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Operator">Operator</option>
+                            @foreach ($role as $key => $user)
+                                <option value="{{ $key }}">{{ $user }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </form>

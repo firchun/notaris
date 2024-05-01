@@ -11,6 +11,12 @@
                     </div>
                     <div class="dt-action-buttons text-end pt-3 pt-md-0">
                         <div class="dt-buttons btn-group flex-wrap">
+                            <button class="btn btn-secondary refresh btn-default" type="button">
+                                <span>
+                                    <i class="bx bx-sync me-sm-1"> </i>
+                                    <span class="d-none d-sm-inline-block"></span>
+                                </span>
+                            </button>
                             <button class="btn btn-secondary create-new btn-primary" type="button" class="btn btn-primary"
                                 data-bs-toggle="modal" data-bs-target="#create">
                                 <span>

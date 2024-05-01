@@ -65,65 +65,73 @@
                 <div data-i18n="Analytics">Dashboard</div>
             </a>
         </li>
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">master data</span>
-        </li>
-        <li class="menu-item {{ request()->is('layanan') ? 'active' : '' }}">
-            <a href="{{ url('/layanan') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-folder"></i>
-                <div data-i18n="Analytics">Layanan</div>
-            </a>
-        </li>
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">pelayanan</span>
-        </li>
-        <li class="menu-item {{ request()->is('pelayanan') ? 'active' : '' }}">
-            <a href="{{ url('/pelayanan') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-folder"></i>
-                <div data-i18n="Analytics">pengajuan</div>
-            </a>
-        </li>
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Biaya</span>
-        </li>
-        <li class="menu-item {{ request()->is('biaya') ? 'active' : '' }}">
-            <a href="{{ url('/biaya') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-folder"></i>
-                <div data-i18n="Analytics">Biaya Pengajuan</div>
-            </a>
-        </li>
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">pengguna</span>
-        </li>
-        <li class="menu-item {{ request()->is('customers') ? 'active' : '' }}">
-            <a href="{{ url('/customers') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-user"></i>
-                <div data-i18n="Analytics">Customers</div>
-            </a>
-        </li>
-        <li class="menu-item {{ request()->is('staffs') ? 'active' : '' }}">
+        @if (Auth::user()->role == 'Admin')
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">master data</span>
+            </li>
+            <li class="menu-item {{ request()->is('layanan') ? 'active' : '' }}">
+                <a href="{{ url('/layanan') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-folder"></i>
+                    <div data-i18n="Analytics">Layanan</div>
+                </a>
+            </li>
+        @endif
+        @if (Auth::user()->role == 'Staff')
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">pelayanan</span>
+            </li>
+            <li class="menu-item {{ request()->is('pelayanan') ? 'active' : '' }}">
+                <a href="{{ url('/pelayanan') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-folder"></i>
+                    <div data-i18n="Analytics">pengajuan</div>
+                </a>
+            </li>
+        @endif
+        @if (Auth::user()->role == 'Keuangan')
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Biaya</span>
+            </li>
+            <li class="menu-item {{ request()->is('biaya') ? 'active' : '' }}">
+                <a href="{{ url('/biaya') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-folder"></i>
+                    <div data-i18n="Analytics">Biaya Pengajuan</div>
+                </a>
+            </li>
+        @endif
+        @if (Auth::user()->role == 'Admin')
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">pengguna</span>
+            </li>
+            <li class="menu-item {{ request()->is('customers') ? 'active' : '' }}">
+                <a href="{{ url('/customers') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-user"></i>
+                    <div data-i18n="Analytics">Customers</div>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->is('staffs') ? 'active' : '' }}">
 
-            <a href="{{ url('/staffs') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-user"></i>
-                <div data-i18n="Analytics">Staff</div>
-            </a>
-        </li>
-        <li class="menu-item {{ request()->is('admins') ? 'active' : '' }}">
+                <a href="{{ url('/staffs') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-user"></i>
+                    <div data-i18n="Analytics">Staff</div>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->is('admins') ? 'active' : '' }}">
 
-            <a href="{{ url('/admins') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-user"></i>
-                <div data-i18n="Analytics">Adminisitrator</div>
-            </a>
-        </li>
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">pengaturan</span>
-        </li>
-        <li class="menu-item {{ request()->is('settings') ? 'active' : '' }}">
-            <a href="{{ url('/settings') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-cog"></i>
-                <div data-i18n="cog">pengaturan</div>
-            </a>
-        </li>
+                <a href="{{ url('/admins') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-user"></i>
+                    <div data-i18n="Analytics">Adminisitrator</div>
+                </a>
+            </li>
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">pengaturan</span>
+            </li>
+            <li class="menu-item {{ request()->is('settings') ? 'active' : '' }}">
+                <a href="{{ url('/settings') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-cog"></i>
+                    <div data-i18n="cog">pengaturan</div>
+                </a>
+            </li>
+        @endif
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Laporan</span>
         </li>

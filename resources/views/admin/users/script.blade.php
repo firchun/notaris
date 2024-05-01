@@ -98,6 +98,11 @@
             $('.create-new').click(function() {
                 $('#create').modal('show');
             });
+            $('.refresh').click(function() {
+                $('#datatable-staffs').DataTable().ajax.reload();
+                $('#datatable-users').DataTable().ajax.reload();
+                $('#datatable-customers').DataTable().ajax.reload();
+            });
             window.editUser = function(id) {
                 $.ajax({
                     type: 'GET',
@@ -108,6 +113,8 @@
                         $('#formUserName').val(response.name);
                         $('#formUserEmail').val(response.email);
                         $('#UsersModal').modal('show');
+                        $('#datatable-users').DataTable().ajax.reload();
+                        $('#datatable-staffs').DataTable().ajax.reload();
                     },
                     error: function(xhr) {
                         alert('Terjadi kesalahan: ' + xhr.responseText);
@@ -128,6 +135,7 @@
                         alert(response.message);
                         // Refresh DataTable setelah menyimpan perubahan
                         $('#datatable-users').DataTable().ajax.reload();
+                        $('#datatable-staffs').DataTable().ajax.reload();
                         $('#usersModal').modal('hide');
                     },
                     error: function(xhr) {
@@ -146,10 +154,12 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
+                        // console.log(response.data);
                         alert(response.message);
                         $('#userssModalLabel').text('Edit User');
                         $('#formUserName').val('');
                         $('#datatable-users').DataTable().ajax.reload();
+                        $('#datatable-staffs').DataTable().ajax.reload();
                         $('#create').modal('hide');
                     },
                     error: function(xhr) {
@@ -170,6 +180,7 @@
                             alert(response.message);
                             // Refresh DataTable setelah menghapus pengguna
                             $('#datatable-users').DataTable().ajax.reload();
+                            $('#datatable-staffs').DataTable().ajax.reload();
                         },
                         error: function(xhr) {
                             alert('Terjadi kesalahan: ' + xhr.responseText);
