@@ -87,8 +87,8 @@
                     },
 
                     {
-                        data: 'biaya',
-                        name: 'biaya'
+                        data: 'biaya_text',
+                        name: 'biaya_text'
                     },
                     {
                         data: 'action',

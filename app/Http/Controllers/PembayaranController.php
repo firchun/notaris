@@ -25,6 +25,39 @@ class PembayaranController extends Controller
             ->rawColumns(['total', 'action'])
             ->make(true);
     }
+    public function getAllPembayaranDataTable(Request $request)
+    {
+        $pembayaran = PembayaranPelayanan::with(['pelayanan' => function ($query) {
+            $query->select('id', 'no_dokumen', 'id_layanan');
+        }, 'pelayanan.layanan', 'staff'])->orderByDesc('id');
+
+        if ($request->tanggal_awal != null || $request->tanggal_awal != '') {
+            $pembayaran->where('created_at', '>=', $request->tanggal_awal)->where('created_at', '<=', $request->tanggal_akhir);
+        }
+
+        if ($request->layanan != null || $request->layanan != '') {
+            $pembayaran->whereHas('pelayanan', function ($query) use ($request) {
+                $query->where('id_layanan', $request->layanan);
+            });
+        }
+        if ($request->staff != null || $request->staff != '') {
+            $pembayaran->where('id_staff', $request->staff);
+        }
+
+        return Datatables::of($pembayaran)
+            ->addColumn('total', function ($pembayaran) {
+                return 'Rp ' . number_format($pembayaran->total);
+            })
+            ->addColumn('tanggal', function ($pembayaran) {
+                return $pembayaran->created_at->format('d F Y');
+            })
+
+            ->addColumn('action', function ($pembayaran) {
+                return '<button class="btn btn-sm btn-danger" onclick="destroyPembayaran(' . $pembayaran->id . ')"><i class="bx bx-trash"></i></button>';
+            })
+            ->rawColumns(['total', 'action', 'tanggal'])
+            ->make(true);
+    }
     public function store(Request $request)
     {
         //pembayaran

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BerkasLayanan;
 use App\Models\FormulirLayanan;
 use App\Models\Layanan;
+use App\Models\Pelayanan;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -35,7 +36,7 @@ class LayananController extends Controller
         ];
         return view('admin.layanan.berkas', $data);
     }
-    public function getLayanansDataTable()
+    public function getLayanansDataTable(Request $request)
     {
         $layanan = Layanan::orderByDesc('id');
 
@@ -48,6 +49,9 @@ class LayananController extends Controller
             })
             ->addColumn('jenis', function ($layanan) {
                 return $layanan->jenis_layanan == 'PPAT' ? '<span class="badge bg-label-primary">PPAT</span>' : '<span class="badge bg-label-success">Notaris</span>';
+            })
+            ->addColumn('jumlah', function ($layanan) {
+                return Pelayanan::where('id_layanan', $layanan->id)->count() . ' Pengajuan';
             })
             ->addColumn('berkas', function ($layanan) {
                 $berkas = BerkasLayanan::where('id_layanan', $layanan->id)->pluck('nama_berkas')->toArray();
@@ -67,7 +71,7 @@ class LayananController extends Controller
                 $listFormulir .= '</ul>';
                 return $listFormulir;
             })
-            ->rawColumns(['action', 'gambar', 'jenis', 'berkas', 'formulir'])
+            ->rawColumns(['action', 'gambar', 'jenis', 'berkas', 'formulir', 'jumlah'])
             ->make(true);
     }
     public function getberkasDataTable($id)

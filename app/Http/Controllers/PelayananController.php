@@ -30,9 +30,22 @@ class PelayananController extends Controller
         ];
         return view('admin.biaya.index', $data);
     }
-    public function getPelayanansDataTable()
+    public function getPelayanansDataTable(Request $request)
     {
         $pelayanan = Pelayanan::with(['layanan', 'pemohon', 'staff'])->orderByDesc('id');
+        if ($request->tanggal_awal != null || $request->tanggal_awal != '') {
+            $pelayanan->where('created_at', '>=', $request->tanggal_awal)->where('created_at', '<=', $request->tanggal_akhir);
+        }
+        if ($request->pembayaran != null || $request->pembayaran != '') {
+            if ($request->pembayaran == 'lunas') {
+                $pelayanan->where('is_paid', 1);
+            } else {
+                $pelayanan->where('is_paid', 0);
+            }
+        }
+        if ($request->layanan != null || $request->layanan != '') {
+            $pelayanan->where('id_layanan', $request->layanan);
+        }
 
         return Datatables::of($pelayanan)
             ->addColumn('action', function ($pelayanan) {
@@ -45,7 +58,7 @@ class PelayananController extends Controller
             ->addColumn('date', function ($pelayanan) {
                 return $pelayanan->created_at->format('d F Y');
             })
-            ->addColumn('biaya', function ($pelayanan) {
+            ->addColumn('biaya_text', function ($pelayanan) {
                 $warna = $pelayanan->is_paid == 0 ? 'text-danger' : 'text-success';
                 $text = $pelayanan->is_paid == 0 ? 'Belum Lunas' : 'LUNAS';
                 return number_format($pelayanan->biaya) . '<br> <span class="' . $warna . '">' . $text . '</span>';
@@ -56,7 +69,12 @@ class PelayananController extends Controller
             ->addColumn('status', function ($pelayanan) {
                 return PelayananStatus::where('id_pelayanan', $pelayanan->id)->latest()->first()->status;
             })
-            ->rawColumns(['action', 'action_biaya', 'status', 'pemohon', 'date', 'biaya'])
+            ->addColumn('pembayaran', function ($pelayanan) {
+                $warna = $pelayanan->is_paid == 0 ? 'text-danger' : 'text-success';
+                $text = $pelayanan->is_paid == 0 ? 'Belum Lunas' : 'LUNAS';
+                return  '<span class="' . $warna . '">' . $text . '</span>';
+            })
+            ->rawColumns(['action', 'action_biaya', 'status', 'pemohon', 'date', 'biaya_text', 'pembayaran'])
             ->make(true);
     }
     public function store(Request $request)

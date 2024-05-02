@@ -147,6 +147,12 @@
                 <div data-i18n="Analytics">Pembayaran</div>
             </a>
         </li>
+        <li class="menu-item {{ request()->is('report/layanan') ? 'active' : '' }}">
+            <a href="{{ url('/report/layanan') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-file"></i>
+                <div data-i18n="Analytics">Layanan</div>
+            </a>
+        </li>
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Akun</span>
         </li>

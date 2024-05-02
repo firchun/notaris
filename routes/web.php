@@ -85,16 +85,19 @@ Route::middleware(['auth:web', 'verified', 'role:User'])->group(function () {
     Route::post('/pengajuan_layanan/store',  [PelayananController::class, 'store'])->name('pengajuan_layanan.store');
 });
 Route::middleware(['auth:web', 'verified', 'role:Admin,Staff,Keuangan'])->group(function () {
+    Route::get('/layanans-datatable', [LayananController::class, 'getLayanansDataTable']);
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     //akun managemen
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     //laporan
     Route::get('/report/pelayanan', [LaporanController::class, 'pelayanan'])->name('report.pelayanan');
     Route::get('/report/pembayaran', [LaporanController::class, 'pembayaran'])->name('report.pembayaran');
+    Route::get('/report/layanan', [LaporanController::class, 'layanan'])->name('report.layanan');
     //pelayanan
     Route::get('/pelayanan/show/{id}',  [PelayananController::class, 'show'])->name('pelayanan.show');
     Route::get('/pelayanan', [PelayananController::class, 'index'])->name('pelayanan');
     Route::get('/pelayanans-datatable', [PelayananController::class, 'getPelayanansDataTable']);
+    Route::get('/all-pembayaran-datatable', [PembayaranController::class, 'getAllPembayaranDataTable']);
 });
 Route::middleware(['auth:web', 'verified', 'role:Staff'])->group(function () {
     //upload berkas akhir
@@ -126,7 +129,7 @@ Route::middleware(['auth:web', 'verified', 'role:Admin'])->group(function () {
     Route::get('/layanan/berkas/{id}',  [LayananController::class, 'berkas'])->name('layanan.berkas');
     Route::get('/layanan/formulir/{id}',  [LayananController::class, 'formulir'])->name('layanan.formulir');
     Route::delete('/layanan/delete/{id}',  [LayananController::class, 'destroy'])->name('layanan.delete');
-    Route::get('/layanans-datatable', [LayananController::class, 'getLayanansDataTable']);
+    // Route::get('/layanans-datatable', [LayananController::class, 'getLayanansDataTable']);
 
     //berkas layanan managemen
     Route::post('/berkas/store',  [LayananController::class, 'storeBerkas'])->name('berkas.store');
