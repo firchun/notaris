@@ -6,13 +6,13 @@
                    <div class="row align-items-center">
                        <div class="logo col-lg-3 text-center text-lg-left mb-3 mb-md-5 mb-lg-0">
                            <a class="d-block" href="{{ url('/') }}">
-                               <img loading="lazy" src="{{ asset('/') }}img/logo.jpg" alt="Constra"
+                               <img loading="lazy" src="{{ asset('/') }}img/logo.png" alt="Constra"
                                    style="height: 100px;">
                            </a>
                        </div><!-- logo end -->
 
                        <div class="col-lg-9 header-right">
-                           <h2>NOTARIS & PPAT AHMAD ALI MUDDIN, SH., M.Kn</h2>
+                           <h2>NOTARIS & PPAT Dr. H. AHMAD ALI MUDDIN, SH., M.Kn</h2>
                        </div><!-- header right end -->
                    </div><!-- logo area end -->
 

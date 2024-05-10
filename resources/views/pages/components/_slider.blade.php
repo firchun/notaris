@@ -4,7 +4,8 @@
             <div class="container h-100">
                 <div class="row align-items-center h-100">
                     <div class="col-md-12 text-center">
-                        <h2 class="slide-title" data-animation-in="slideInLeft">NOTARIS & PPAT AHMAD ALI MUDDIN, SH., M.Kn
+                        <h2 class="slide-title" data-animation-in="slideInLeft">NOTARIS & PPAT Dr. H. AHMAD ALI MUDDIN,
+                            SH., M.Kn
                         </h2>
                         <h3 class="slide-sub-title" data-animation-in="slideInRight">Notaris & PPAT</h3>
                         <p data-animation-in="slideInLeft" data-duration-in="1.2">
@@ -19,7 +20,8 @@
             <div class="container h-100">
                 <div class="row align-items-center h-100">
                     <div class="col-md-12 text-center   ">
-                        <h2 class="slide-title" data-animation-in="slideInLeft">NOTARIS & PPAT AHMAD ALI MUDDIN, SH.,
+                        <h2 class="slide-title" data-animation-in="slideInLeft">NOTARIS & PPAT Dr. H. AHMAD ALI MUDDIN,
+                            SH.,
                             M.Kn</h2>
                         <h3 class="slide-sub-title" data-animation-in="slideInRight">Notaris & PPAT</h3>
                         <p data-animation-in="slideInLeft" data-duration-in="1.2">
