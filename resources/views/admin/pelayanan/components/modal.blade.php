@@ -46,7 +46,13 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary " id="btnTerimaBerkas">Save</button>
+                <button type="button" class="btn btn-primary " id="btnTerimaBerkas">
+                    <span id="terimaText">Simpan</span>
+                    <span id="terimaSpinner" style="display: none;">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="visually-hidden">Loading...</span>
+                    </span>
+                </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -71,7 +77,13 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary " id="btnUploadBerkas">Upload</button>
+                <button type="button" class="btn btn-primary " id="btnUploadBerkas">
+                    <span id="uploadText">Upload</span>
+                    <span id="uploadSpinner" style="display: none;">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="visually-hidden">Loading...</span>
+                    </span>
+                </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>

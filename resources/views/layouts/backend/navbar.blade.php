@@ -22,6 +22,43 @@
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- Place this tag where you want the button to render. -->
             <!-- User -->
+            <li class="nav-item navbar-dropdown dropdown mx-3">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <i class="bx bx-bell bx-sm text-primary"></i>
+                    @if (App\Models\Notifikasi::getCountNotifikasi(Auth::id()) != 0)
+                        <span
+                            class="badge rounded-pill badge-center h-px-20 w-px-20 bg-label-danger">{{ App\Models\Notifikasi::getCountNotifikasi(Auth::id()) }}</span>
+                    @endif
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end p-2" style="min-width:400px;">
+                    <li><strong class="dropdown-item text-center"><i class="bx bx-bell  text-primary"></i>
+                            NOTIFIKASI</strong>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    @forelse(App\Models\Notifikasi::getUserNotifikasi(Auth::id()) as $item)
+                        <li>
+                            <a href="{{ Url($item->url) }}" class="dropdown-item text-{{ $item->jenis }}"><i
+                                    class="bx bx-bell bx-sm text-{{ $item->jenis }}"></i>
+                                {{ Str::limit($item->isi_notifikasi, 100) }}
+                            </a>
+                        </li>
+                    @empty
+                        <li>
+                            <span class=" dropdown-item text-center my-2 text-muted">Belum ada notifikasi</span>
+                        </li>
+                    @endforelse
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                        <a class="dropdown-item text-center" href="#">
+                            <span class="align-center">Lihat Semua Notifikasi</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">

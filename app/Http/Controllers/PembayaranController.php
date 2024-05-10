@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notifikasi;
 use App\Models\Pelayanan;
 use App\Models\PelayananStatus;
 use App\Models\PembayaranPelayanan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -77,6 +79,17 @@ class PembayaranController extends Controller
             $status->id_staff = Auth::user()->id;
             $status->status = 'Pembayaran LUNAS';
             $status->save();
+
+            //notifikasi 
+            $staff = User::where('role', 'Staff')->get();
+            foreach ($staff as $item) {
+                $notifikasi = new Notifikasi();
+                $notifikasi->id_user = $item->id;
+                $notifikasi->isi_notifikasi = 'Layanan ' . $tagihan->nama_layanan . ' oleh : ' . $tagihan->pemohon->name . ', telah lunas..';
+                $notifikasi->jenis = 'primary';
+                $notifikasi->url = '/pelayanan';
+                $notifikasi->save();
+            }
             session()->flash('success', 'Pembayaran telah lunas');
         }
         $pembayaran = new PembayaranPelayanan();
@@ -91,11 +104,40 @@ class PembayaranController extends Controller
         $pembayaran = PembayaranPelayanan::find($id);
 
         if (!$pembayaran) {
-            return response()->json(['message' => 'Pemabayaran not found'], 404);
+            return response()->json(['message' => 'Pembayaran not found'], 404);
         }
+        //pembayaran
+        $pembayaran_old = PembayaranPelayanan::where('id_pelayanan', $pembayaran->id_pelayanan)->sum('total');
+        $pembayaran_dihapus = $pembayaran->total;
+        $total_pembayaran = $pembayaran_old - $pembayaran_dihapus;
+        //tagihan
+        $tagihan = Pelayanan::find($pembayaran->id_pelayanan);
+        $total_tagihan = $tagihan->biaya;
 
+        if ($total_pembayaran < $total_tagihan) {
+            $tagihan->is_paid = 0;
+            $tagihan->save();
+
+            if ($total_pembayaran < $pembayaran_old) {
+                $status = new PelayananStatus();
+                $status->id_pelayanan = $pembayaran->id_pelayanan;
+                $status->id_staff = Auth::user()->id;
+                $status->status = 'Pelunasan digagalkan';
+                $status->save();
+                //notifikasi 
+                $staff = User::where('role', 'Staff')->get();
+                foreach ($staff as $item) {
+                    $notifikasi = new Notifikasi();
+                    $notifikasi->id_user = $item->id;
+                    $notifikasi->isi_notifikasi = 'Layanan ' . $tagihan->nama_layanan . ' oleh : ' . $tagihan->pemohon->name . ', Pelunasan digagalkan';
+                    $notifikasi->jenis = 'danger';
+                    $notifikasi->url = '/pelayanan';
+                    $notifikasi->save();
+                }
+            }
+        }
         $pembayaran->delete();
 
-        return response()->json(['message' => 'Pemabayaran deleted successfully']);
+        return response()->json(['message' => 'Pembayaran deleted successfully']);
     }
 }

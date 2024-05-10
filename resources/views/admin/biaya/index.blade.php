@@ -25,6 +25,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Tagihan</th>
                                 <th>Tanggal</th>
                                 <th>No Dokumen</th>
                                 <th>Nama Pemohon</th>
@@ -37,6 +38,7 @@
                         <tfoot>
                             <tr>
                                 <th>ID</th>
+                                <th>Tagihan</th>
                                 <th>Tanggal</th>
                                 <th>No Dokumen</th>
                                 <th>Nama Pemohon</th>
@@ -68,6 +70,10 @@
                         name: 'id'
                     },
 
+                    {
+                        data: 'send',
+                        name: 'send'
+                    },
                     {
                         data: 'date',
                         name: 'date'
@@ -106,6 +112,10 @@
             window.inputBiaya = function(id) {
                 $('#idPelayanan').val(id);
                 $('#inputBiaya').modal('show');
+            };
+            window.sendWhatsapp = function(id) {
+                $('#idPelayanan').val(id);
+                console.log('kirim wa berhasil' + id);
             };
             window.destroyPembayaran = function(id) {
                 $.ajax({

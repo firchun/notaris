@@ -7,8 +7,10 @@ use App\Models\BerkasLayanan;
 use App\Models\BerkasPelayanan;
 use App\Models\FormulirPelayanan;
 use App\Models\Layanan;
+use App\Models\Notifikasi;
 use App\Models\Pelayanan;
 use App\Models\PelayananStatus;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -74,7 +76,11 @@ class PelayananController extends Controller
                 $text = $pelayanan->is_paid == 0 ? 'Belum Lunas' : 'LUNAS';
                 return  '<span class="' . $warna . '">' . $text . '</span>';
             })
-            ->rawColumns(['action', 'action_biaya', 'status', 'pemohon', 'date', 'biaya_text', 'pembayaran'])
+            ->addColumn('send', function ($pelayanan) {
+                $warna = $pelayanan->is_send == 0 ? 'outline-success' : 'outline-muted';
+                return  '<button type="button"  onclick="sendWhatsapp(' . $pelayanan->id . ')" class=" btn btn-sm btn-' . $warna . '"><i class="bx bxl-whatsapp bx-sm"></i></button>';
+            })
+            ->rawColumns(['action', 'action_biaya', 'status', 'pemohon', 'date', 'biaya_text', 'pembayaran', 'send'])
             ->make(true);
     }
     public function store(Request $request)
@@ -118,10 +124,24 @@ class PelayananController extends Controller
             $formulir_pelayanan->isi_formulir = $request->input('isi_formulir')[$key];
             $formulir_pelayanan->save();
         }
+        //status pelayanan
         $status = new PelayananStatus();
         $status->id_pelayanan = $pelayanan->id;
         $status->status = 'Menunggu verifikasi oleh staf';
         $status->save();
+
+        //notifikasi 
+        $staff = User::where('role', 'Staff')->get();
+        $pemohon = User::find(Auth::user()->id);
+        foreach ($staff as $item) {
+            $notifikasi = new Notifikasi();
+            $notifikasi->id_user = $item->id;
+            $notifikasi->isi_notifikasi = 'Sdr.' . $pemohon->name . ', telah mengajukan permohonan layanan : ' . $layanan->nama_layanan;
+            $notifikasi->jenis = 'primary';
+            $notifikasi->url = '/pelayanan';
+            $notifikasi->save();
+        }
+
 
         $message = 'Pengajuan telah berhasil';
         return redirect()->to('/pengajuan_user')->withSuccess($message);
@@ -177,6 +197,18 @@ class PelayananController extends Controller
         $status->status = 'Proses perhitungan biaya';
         $status->save();
 
+        //notifikasi
+        $keuangan = User::where('role', 'Keuangan')->get();
+        $staff = User::find(Auth::id());
+        foreach ($keuangan as $item) {
+            $notifikasi = new Notifikasi();
+            $notifikasi->id_user = $item->id;
+            $notifikasi->isi_notifikasi = 'Staff An.' . $staff->name . ', telah Menyetujui permohonan, menunggu perhitungan biaya';
+            $notifikasi->jenis = 'warning';
+            $notifikasi->url = '/biaya';
+            $notifikasi->save();
+        }
+
         return response()->json(['message' => 'Data berhasil diverifikasi']);
     }
     public function tolak($id)
@@ -223,6 +255,28 @@ class PelayananController extends Controller
         $pelayanan->id_staff = Auth::user()->id;
         $status->status = 'Proses pengurusan dokumen';
         $status->save();
+
+        //notifikasi 
+        $staff = User::where('role', 'Staff')->get();
+        $keuangan = User::where('role', 'Keuangan')->get();
+        $pemohon = User::find(Auth::user()->id);
+        foreach ($staff as $item) {
+            $notifikasi = new Notifikasi();
+            $notifikasi->id_user = $item->id;
+            $notifikasi->isi_notifikasi = 'Sdr.' . $pemohon->name . ', telah menyetujui biaya layanan dan melanjutkan pemrosesan berkas';
+            $notifikasi->jenis = 'primary';
+            $notifikasi->url = '/pelayanan';
+            $notifikasi->save();
+        }
+        foreach ($keuangan as $item) {
+            $notifikasi = new Notifikasi();
+            $notifikasi->id_user = $item->id;
+            $notifikasi->isi_notifikasi = 'Sdr.' . $pemohon->name . ', telah menyetujui biaya layanan dan melanjutkan pemrosesan berkas';
+            $notifikasi->jenis = 'primary';
+            $notifikasi->url = '/biaya';
+            $notifikasi->save();
+        }
+
         session()->flash('success', 'Berhasil menyetujui layanan');
         return redirect()->back();
     }

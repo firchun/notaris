@@ -69,6 +69,8 @@
             };
             $('#btnUploadBerkas').click(function() {
                 var formData = new FormData($('#formUploadBerkas')[0]);
+                $('#uploadText').hide();
+                $('#uploadSpinner').show();
                 $.ajax({
                     type: 'POST',
                     url: '/berkas/upload-berkas',
@@ -79,6 +81,8 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
+                        $('#uploadText').show();
+                        $('#uploadSpinner').hide();
                         alert(response.message);
                         $('#idPelayanan').val('');
                         $('#formTermiaBerkasFoto').val('');
@@ -86,12 +90,16 @@
                         $('#uploadBerkas').modal('hide');
                     },
                     error: function(xhr) {
+                        $('#uploadText').show();
+                        $('#uploadSpinner').hide();
                         alert('Terjadi kesalahan: ' + xhr.responseText);
                     }
                 });
             });
             $('#btnTerimaBerkas').click(function() {
                 var formData = new FormData($('#formTerimaBerkas')[0]);
+                $('#terimaText').hide();
+                $('#terimaSpinner').show();
                 $.ajax({
                     type: 'POST',
                     url: '/berkas/terima-berkas',
@@ -102,6 +110,8 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
+                        $('#terimaText').show();
+                        $('#terimaSpinner').hide();
                         alert(response.message);
                         $('#idPelayanan').val('');
                         $('#formTermiaBerkasFoto').val('');
@@ -178,31 +188,33 @@
                     type: 'GET',
                     url: 'berkas/get-api-berkas/' + id,
                     success: function(response) {
-                        var berkasUrl = "{{ Storage::url('') }}" + response.berkas_akhir;
-                        berkasUrl = berkasUrl.replace('public/', '');
+                        if (response.length != 0) {
+                            var berkasUrl = "{{ Storage::url('') }}" + response.berkas_akhir;
+                            berkasUrl = berkasUrl.replace('public/', '');
 
-                        var fotoUrl = "{{ Storage::url('') }}" + response.foto_penerimaan;
-                        fotoUrl = fotoUrl.replace('public/', '');
-                        var berkasView = '<table class="table table-striped table-bordered">' +
-                            '<tr>' +
-                            '<td>Berkas Akhir</td>' +
-                            '<td><a target="__blank" href="' + berkasUrl +
-                            '" class="btn btn-success">Lihat' +
-                            'Berkas</a></td>' +
-                            '</tr>';
-
-                        if (response.diterima == 1) {
-                            berkasView +=
+                            var fotoUrl = "{{ Storage::url('') }}" + response.foto_penerimaan;
+                            fotoUrl = fotoUrl.replace('public/', '');
+                            var berkasView = '<table class="table table-striped table-bordered">' +
                                 '<tr>' +
-                                '<td>Foto penerimaan</td>' +
-                                '<td><img src="' + fotoUrl +
-                                '" style="width:200px;height:200px;object-fit:cover;"></td>' +
+                                '<td>Berkas Akhir</td>' +
+                                '<td><a target="__blank" href="' + berkasUrl +
+                                '" class="btn btn-success">Lihat' +
+                                'Berkas</a></td>' +
                                 '</tr>';
 
-                        }
-                        berkasView += '</table>';
+                            if (response.diterima == 1) {
+                                berkasView +=
+                                    '<tr>' +
+                                    '<td>Foto penerimaan</td>' +
+                                    '<td><img src="' + fotoUrl +
+                                    '" style="width:200px;height:200px;object-fit:cover;"></td>' +
+                                    '</tr>';
 
-                        $('#customersModal .berkas').html(berkasView);
+                            }
+                            berkasView += '</table>';
+
+                            $('#customersModal .berkas').html(berkasView);
+                        }
                     },
                     error: function(xhr) {
                         alert('Terjadi kesalahan: ' + xhr.responseText);

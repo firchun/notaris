@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\BerkasAkhir;
+use App\Models\Notifikasi;
+use App\Models\Pelayanan;
 use App\Models\PelayananStatus;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -48,6 +51,18 @@ class BerkasAkhirController extends Controller
         $status->id_pelayanan = $id_pelayanan;
         $status->status = 'Berkas telah diserahkan';
         $status->save();
+
+        //notifikasi 
+        $pelayanan = Pelayanan::find($id_pelayanan);
+        $admin = User::where('role', 'Admin')->get();
+        foreach ($admin as $item) {
+            $notifikasi = new Notifikasi();
+            $notifikasi->id_user = $item->id;
+            $notifikasi->isi_notifikasi = 'Berkas pada no. dokumen ' . $pelayanan->no_dokumen . ' oleh : ' . $pelayanan->pemohon->name . ', telah diserahkan..';
+            $notifikasi->jenis = 'primary';
+            $notifikasi->url = '/report/pelayanan';
+            $notifikasi->save();
+        }
 
         return response()->json(['message' => 'Berhasil update penerimaan']);
     }
