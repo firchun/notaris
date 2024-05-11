@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Layanan;
 use App\Models\Pelayanan;
 use App\Models\Setting;
 use App\Models\User;
@@ -29,8 +30,18 @@ class HomeController extends Controller
     {
         $data = [
             'title' => 'Dashboard',
-            'users' => User::count(),
-            'customers' => Customer::count()
+            'users' => User::where('role', 'User')->count(),
+            'staff' => User::where('role', 'Staff')->count(),
+            'keuangan' => User::where('role', 'Keuangan')->count(),
+            'layanan' => Layanan::count(),
+            'total_pengajuan' => Pelayanan::count(),
+            'total_pengajuan_new' => Pelayanan::where('is_verified', 0)->count(),
+            'total_pengajuan_verified' => Pelayanan::where('is_verified', 1)->count(),
+            'total_pengajuan_not_confirm' => Pelayanan::where('is_verified', 1)->where('is_continue', 0)->count(),
+            'total_pengajuan_confirm' => Pelayanan::where('is_verified', 1)->where('is_continue', 1)->count(),
+            'total_pengajuan_not_lunas' => Pelayanan::where('is_verified', 1)->where('is_continue', 1)->where('is_paid', 0)->count(),
+            'total_pengajuan_lunas' => Pelayanan::where('is_verified', 1)->where('is_continue', 1)->where('is_paid', 1)->count(),
+            'total_pengajuan_send' => Pelayanan::where('is_verified', 1)->where('is_continue', 1)->where('is_send', 1)->count(),
         ];
         return view('admin.dashboard', $data);
     }

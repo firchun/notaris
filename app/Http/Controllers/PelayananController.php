@@ -280,4 +280,18 @@ class PelayananController extends Controller
         session()->flash('success', 'Berhasil menyetujui layanan');
         return redirect()->back();
     }
+    public function sendWa($id)
+    {
+        $pelayanan =  Pelayanan::where('id', $id)->with('pemohon')->first();
+        $text = 'https://wa.me/' . $pelayanan->pemohon->no_hp;
+        if ($pelayanan->is_send == 0) {
+            $pelayanan->is_send = 1;
+            $pelayanan->save();
+            return response()->json(['url' => $text, 'status' => 'Anda akan dialihkan untuk mengirim tagihan via whatsapp..']);
+        } elseif ($pelayanan->is_send == 1) {
+            return response()->json(['url' => $text, 'status' => 'Tagihan telah dikirim sebelumnya, apakah ingin mengirim ulang?.']);
+        } else {
+            return response()->json(['status' => 'Gagal']);
+        }
+    }
 }

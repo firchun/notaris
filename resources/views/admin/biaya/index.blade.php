@@ -58,6 +58,7 @@
 @endsection
 @include('admin.pelayanan.script')
 @push('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(function() {
             $('#datatable-biaya').DataTable({
@@ -114,9 +115,39 @@
                 $('#inputBiaya').modal('show');
             };
             window.sendWhatsapp = function(id) {
-                $('#idPelayanan').val(id);
-                console.log('kirim wa berhasil' + id);
+                $.ajax({
+                    type: 'GET',
+                    url: '/send-wa/' + id,
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Confirmation",
+                            text: response.status,
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'OK',
+                            cancelButtonText: 'Cancel'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Open new tab and redirect to the URL received from the response
+                                window.open(response.url, '_blank');
+
+                                // Refresh DataTable after saving changes
+                                $('#datatable-biaya').DataTable().ajax.reload();
+                            }
+                        });
+
+                    },
+                    error: function(xhr) {
+                        alert('An error occurred: ' + xhr.responseText);
+                    }
+                });
             };
+
             window.destroyPembayaran = function(id) {
                 $.ajax({
                     type: 'POST',

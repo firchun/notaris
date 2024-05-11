@@ -98,6 +98,7 @@ Route::middleware(['auth:web', 'verified', 'role:Admin,Staff,Keuangan'])->group(
     Route::get('/pelayanan', [PelayananController::class, 'index'])->name('pelayanan');
     Route::get('/pelayanans-datatable', [PelayananController::class, 'getPelayanansDataTable']);
     Route::get('/all-pembayaran-datatable', [PembayaranController::class, 'getAllPembayaranDataTable']);
+    Route::get('/send-wa/{id}', [PelayananController::class, 'sendWa'])->name('send-wa');
 });
 Route::middleware(['auth:web', 'verified', 'role:Staff'])->group(function () {
     //upload berkas akhir
