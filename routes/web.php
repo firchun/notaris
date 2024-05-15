@@ -108,13 +108,13 @@ Route::middleware(['auth:web', 'verified', 'role:Staff'])->group(function () {
     Route::post('/pelayanan/store',  [PelayananController::class, 'store'])->name('pelayanan.store');
     Route::get('/pelayanan/terima/{id}',  [PelayananController::class, 'terima'])->name('pelayanan.terima');
     Route::get('/pelayanan/tolak/{id}',  [PelayananController::class, 'tolak'])->name('pelayanan.tolak');
-    Route::post('/pelayanan/input-biaya',  [PelayananController::class, 'inputBiaya'])->name('pelayanan.input-biaya');
     Route::delete('/pelayanan/delete/{id}',  [PelayananController::class, 'destroy'])->name('pelayanan.delete');
 });
 Route::middleware(['auth:web', 'verified', 'role:Keuangan'])->group(function () {
     //biaya managemen
     Route::get('/biaya', [PelayananController::class, 'biaya'])->name('biaya');
     //pembayaran
+    Route::post('/pelayanan/input-biaya',  [PelayananController::class, 'inputBiaya'])->name('pelayanan.input-biaya');
     Route::get('/pembayaran-datatable/{id}', [PembayaranController::class, 'getPembayaranDataTable']);
     Route::post('/pembayaran/store',  [PembayaranController::class, 'store'])->name('pembayaran.store');
     Route::post('/pembayaran/delete/{id}',  [PembayaranController::class, 'destroy'])->name('pembayaran.delete');

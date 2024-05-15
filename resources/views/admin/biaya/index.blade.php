@@ -208,6 +208,7 @@
 
                     success: function(response) {
                         alert(response.message);
+                        console.log(response);
                         // Refresh DataTable setelah menyimpan perubahan
                         $('#datatable-biaya').DataTable().ajax.reload();
 

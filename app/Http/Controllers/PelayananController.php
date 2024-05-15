@@ -226,6 +226,21 @@ class PelayananController extends Controller
 
         return response()->json(['message' => 'Data berhasil ditolak']);
     }
+    public function perbaiki($id)
+    {
+        $pelayanan = Pelayanan::find($id);
+        $pelayanan->is_verified = 3;
+        $pelayanan->id_staff = Auth::user()->id;
+        $pelayanan->update();
+
+        $status = new PelayananStatus();
+        $status->id_pelayanan = $id;
+        $pelayanan->id_staff = Auth::user()->id;
+        $status->status = 'Berkas dikembalikan';
+        $status->save();
+
+        return response()->json(['message' => 'Data berhasil di kembalikan']);
+    }
     public function inputBiaya(Request $request)
     {
         $biaya = $request->input('biaya');
