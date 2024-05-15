@@ -199,7 +199,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/pelayanan/input-biaya/',
+                    url: '/pelayanan/input-biaya',
                     data: {
                         id: id,
                         biaya: biaya,
