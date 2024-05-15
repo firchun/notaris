@@ -283,7 +283,14 @@ class PelayananController extends Controller
     public function sendWa($id)
     {
         $pelayanan =  Pelayanan::where('id', $id)->with('pemohon')->first();
-        $text = 'https://wa.me/' . $pelayanan->pemohon->no_hp;
+        if (Auth::user()->role != 'Keuangan') {
+            $text = 'https://wa.me/' . $pelayanan->pemohon->no_hp;
+        } elseif (Auth::user()->role == 'Keuangan') {
+            $text = 'https://wa.me/' . $pelayanan->pemohon->no_hp;
+        } else {
+            return back();
+        }
+
         if ($pelayanan->is_send == 0) {
             $pelayanan->is_send = 1;
             $pelayanan->save();

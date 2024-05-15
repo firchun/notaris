@@ -28,14 +28,12 @@
                         </div>
 
                         <div class="col-md-7 newsletter-form">
-                            <form action="#" method="post">
-                                <div class="form-group d-flex">
-                                    <label for="newsletter-email" class="content-hidden">Nomor Dokumen</label>
-                                    <input type="text" id="nomor" class="form-control form-control-lg"
-                                        placeholder="Nomor Dokumen" autocomplete="off">
-                                    <button type="button" class="btn btn-outline-light ml-2" id="cekDokumen">Cek</button>
-                                </div>
-                            </form>
+                            <div class="form-group d-flex">
+                                <label for="newsletter-email" class="content-hidden">Nomor Dokumen</label>
+                                <input type="text" id="nomor" class="form-control form-control-lg"
+                                    placeholder="Nomor Dokumen" autocomplete="off">
+                                <button type="button" class="btn btn-outline-light ml-2" id="cekDokumen">Cek</button>
+                            </div>
                         </div>
                     </div><!-- Newsletter end -->
                 </div><!-- Col end -->
