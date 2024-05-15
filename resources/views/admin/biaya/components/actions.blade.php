@@ -1,6 +1,12 @@
 <div class="btn-group">
     @if ($pelayanan->biaya == 0)
-        <button class="btn btn-sm btn-primary" onclick="inputBiaya({{ $pelayanan->id }})">Input Biaya</button>
+        @if ($pelayanan->is_verified == 1)
+            <button class="btn btn-sm btn-primary" onclick="inputBiaya({{ $pelayanan->id }})">Input Biaya</button>
+        @elseif($pelayanan->is_verified == 2)
+            <span>Pengajuan ditolak</span>
+        @else
+            <span>Menunggu pengecekan berkas</span>
+        @endif
     @else
         @if ($pelayanan->is_verified == 1)
             @if ($pelayanan->is_continue == 0)
