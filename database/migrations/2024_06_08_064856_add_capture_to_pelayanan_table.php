@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('berkas_pelayanan', function (Blueprint $table) {
-            //
+        Schema::table('pelayanan', function (Blueprint $table) {
+            $table->string('capture')->nullable()->after('id_staff');
         });
     }
 
@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('berkas_pelayanan', function (Blueprint $table) {
+        Schema::table('pelayanan', function (Blueprint $table) {
             //
         });
     }

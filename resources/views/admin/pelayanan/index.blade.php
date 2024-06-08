@@ -25,7 +25,9 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th></th>
                                 <th>Tanggal</th>
+                                <th>Capture</th>
                                 <th>No Dokumen</th>
                                 <th>Nama Pemohon</th>
                                 <th>Layanan</th>
@@ -36,7 +38,9 @@
                         <tfoot>
                             <tr>
                                 <th>ID</th>
+                                <th></th>
                                 <th>Tanggal</th>
+                                <th>Capture</th>
                                 <th>No Dokumen</th>
                                 <th>Nama Pemohon</th>
                                 <th>Layanan</th>

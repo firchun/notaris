@@ -10,10 +10,18 @@
                         data: 'id',
                         name: 'id'
                     },
+                    {
+                        data: 'send',
+                        name: 'send'
+                    },
 
                     {
                         data: 'date',
                         name: 'date'
+                    },
+                    {
+                        data: 'capture',
+                        name: 'capture'
                     },
                     {
                         data: 'no_dokumen',
@@ -42,6 +50,39 @@
             $('.refresh').click(function() {
                 $('#datatable-pelayanan').DataTable().ajax.reload();
             });
+            window.sendWhatsapp = function(id) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/send-wa/' + id,
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Confirmation",
+                            text: response.status,
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'OK',
+                            cancelButtonText: 'Cancel'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Open new tab and redirect to the URL received from the response
+                                window.open(response.url, '_blank');
+
+                                // Refresh DataTable after saving changes
+                                $('#datatable-biaya').DataTable().ajax.reload();
+                            }
+                        });
+
+                    },
+                    error: function(xhr) {
+                        alert('An error occurred: ' + xhr.responseText);
+                    }
+                });
+            };
             $('.btn-action').click(function() {
                 var id = $(this).data('id');
                 var action = $(this).data('action');

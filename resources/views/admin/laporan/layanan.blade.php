@@ -78,7 +78,7 @@
                         text: '<i class="bx bxs-file-pdf"></i> PDF',
                         className: 'btn-danger mx-3',
                         orientation: 'landscape',
-                        title: 'Data Laporan Stok Utama',
+                        title: 'Data Laporan Layanan',
                         pageSize: 'A4',
                         exportOptions: {
                             columns: ':visible'

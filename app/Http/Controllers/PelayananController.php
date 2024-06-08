@@ -13,6 +13,7 @@ use App\Models\PelayananStatus;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
 
@@ -54,6 +55,9 @@ class PelayananController extends Controller
                 $cek_berkas = BerkasAkhir::where('id_pelayanan', $pelayanan->id);
                 return view('admin.pelayanan.components.actions', compact('pelayanan', 'cek_berkas'));
             })
+            ->addColumn('capture', function ($pelayanan) {
+                return '<img src="' . Storage::url($pelayanan->capture) . '" alt="capture" style="width:100px;">';
+            })
             ->addColumn('action_biaya', function ($pelayanan) {
                 return view('admin.biaya.components.actions', compact('pelayanan'));
             })
@@ -80,7 +84,7 @@ class PelayananController extends Controller
                 $warna = $pelayanan->is_send == 0 ? 'outline-success' : 'outline-muted';
                 return  '<button type="button"  onclick="sendWhatsapp(' . $pelayanan->id . ')" class=" btn btn-sm btn-' . $warna . '"><i class="bx bxl-whatsapp bx-sm"></i></button>';
             })
-            ->rawColumns(['action', 'action_biaya', 'status', 'pemohon', 'date', 'biaya_text', 'pembayaran', 'send'])
+            ->rawColumns(['action', 'action_biaya', 'status', 'pemohon', 'date', 'biaya_text', 'pembayaran', 'send', 'capture'])
             ->make(true);
     }
     public function store(Request $request)
@@ -89,6 +93,7 @@ class PelayananController extends Controller
             'nama_pemohon' => 'required|string|max:255',
             'id_layanan' => 'required',
             'id_user' => 'required',
+            'capture' => 'required',
             'berkas.*' => 'required|file|mimes:pdf,doc,docx',
         ]);
 
@@ -99,9 +104,14 @@ class PelayananController extends Controller
             'nama_pemohon' => $request->input('nama_pemohon'),
             'id_layanan' => $request->input('id_layanan'),
             'id_user' => $request->input('id_user'),
+            'capture' => $request->input('capture'),
         ];
+        $capture = $request->file('capture');
+        $filename_capture = Str::random(32) . '.' . $capture->getClientOriginalExtension();
+        $file_path_capture = $capture->storeAs('public/berkas', $filename_capture);
 
         $random_number = mt_rand(10000, 99999);
+        $permohonanData['capture'] = $file_path_capture;
         $permohonanData['no_dokumen'] = 'AM' . $random_number . $jenis;
         $pelayanan = Pelayanan::create($permohonanData);
 
@@ -299,9 +309,58 @@ class PelayananController extends Controller
     {
         $pelayanan =  Pelayanan::where('id', $id)->with('pemohon')->first();
         if (Auth::user()->role != 'Keuangan') {
-            $text = 'https://wa.me/' . $pelayanan->pemohon->no_hp;
+            $cek_berkas_akhir = BerkasAkhir::where('id_pelayanan', $pelayanan->id)->first();
+            if ($pelayanan->is_verified == 1 && $pelayanan->biaya == 0) {
+                $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                    "Telah di verifikasi dan menunggu perhitungan biaya \n" .
+                    "-------------------------------------\n" .
+                    "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
+                    url('/pengajuan_user') . "\n";
+            } elseif ($pelayanan->is_verified == 0) {
+                $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                    "Menunggu verifikasi oleh staff \n" .
+                    "-------------------------------------\n" .
+                    "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
+                    url('/pengajuan_user') . "\n";
+            } elseif ($cek_berkas_akhir->count() != 0) {
+                if ($cek_berkas_akhir->diterima == 0) {
+
+                    $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                        "Berkas telah selesai, silahkan mengambil di kantor \n" .
+                        "-------------------------------------\n" .
+                        "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
+                        url('/pengajuan_user') . "\n";
+                } else {
+                    $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                        "Berkas telah diterima \n" .
+                        "-------------------------------------\n" .
+                        "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
+                        url('/pengajuan_user') . "\n";
+                }
+            }
+            $pesan_encoded = urlencode($pesan);
+            $url = 'https://api.whatsapp.com/send?phone=' . $pelayanan->pemohon->no_hp . '&text=' . $pesan_encoded;
         } elseif (Auth::user()->role == 'Keuangan') {
-            $text = 'https://wa.me/' . $pelayanan->pemohon->no_hp;
+            //api wa
+            if ($pelayanan->is_continue == 0) {
+                $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                    "Total Tagihan : Rp. " . $pelayanan->biaya . "\n" .
+                    "-------------------------------------\n" .
+                    "Silahkan login pada akun anda dan konfirmasi untuk melanjutkan dokumen \n" .
+                    url('/pengajuan_user') . "\n";
+            } elseif ($pelayanan->is_continue == 1) {
+                $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                    "Total Tagihan : Rp. " . $pelayanan->biaya . "\n" .
+                    "Status : Telah dilanjutkan dan dokumen akan di proses\n" .
+                    "-------------------------------------\n" .
+                    "Silahkan login pada akun anda untuk melihat progress dokumen \n" .
+                    url('/pengajuan_user') . "\n";
+            } else {
+                $pesan = "";
+            }
+
+            $pesan_encoded = urlencode($pesan);
+            $url = 'https://api.whatsapp.com/send?phone=' . $pelayanan->pemohon->no_hp . '&text=' . $pesan_encoded;
         } else {
             return back();
         }
@@ -309,9 +368,9 @@ class PelayananController extends Controller
         if ($pelayanan->is_send == 0) {
             $pelayanan->is_send = 1;
             $pelayanan->save();
-            return response()->json(['url' => $text, 'status' => 'Anda akan dialihkan untuk mengirim tagihan via whatsapp..']);
+            return response()->json(['url' => $url, 'status' => 'Anda akan dialihkan untuk mengirim tagihan via whatsapp..']);
         } elseif ($pelayanan->is_send == 1) {
-            return response()->json(['url' => $text, 'status' => 'Tagihan telah dikirim sebelumnya, apakah ingin mengirim ulang?.']);
+            return response()->json(['url' => $url, 'status' => 'Tagihan telah dikirim sebelumnya, apakah ingin mengirim ulang?.']);
         } else {
             return response()->json(['status' => 'Gagal']);
         }
