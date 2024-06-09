@@ -42,6 +42,8 @@
                                            class="nav-link" href="{{ url('/tracking') }}">Tracking
                                            Dokumen</a>
                                    </li>
+                                   <li class="nav-item {{ request()->is('harga') ? 'active' : '' }}"><a class="nav-link"
+                                           href="{{ url('/harga') }}">Harga</a></li>
                                    <li class="nav-item {{ request()->is('tentang_kami') ? 'active' : '' }}"><a
                                            class="nav-link" href="{{ url('/tentang_kami') }}">Tentang
                                            Kami</a></li>

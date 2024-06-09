@@ -50,6 +50,13 @@ Route::get('/kontak_kami', function () {
     ];
     return view('pages/kontak_kami', $data);
 });
+Route::get('/harga', function () {
+    $data = [
+        'title' => 'Biaya Pengurusan Notaris dan PPAT',
+        'setting' => Setting::latest()->first(),
+    ];
+    return view('pages/harga', $data);
+});
 Route::get('/tracking', function () {
     $title = 'Tracking Pengajuan';
     return view('pages/tracking', ['title' => $title]);
