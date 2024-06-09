@@ -56,7 +56,7 @@ class PelayananController extends Controller
                 return view('admin.pelayanan.components.actions', compact('pelayanan', 'cek_berkas'));
             })
             ->addColumn('capture', function ($pelayanan) {
-                return '<img src="' . Storage::url($pelayanan->capture) . '" alt="capture" style="width:100px;">';
+                return '<a href="' . Storage::url($pelayanan->capture) . '" target="__blank"><img src="' . Storage::url($pelayanan->capture) . '" alt="capture" style="width:100px;"></a>';
             })
             ->addColumn('action_biaya', function ($pelayanan) {
                 return view('admin.biaya.components.actions', compact('pelayanan'));
