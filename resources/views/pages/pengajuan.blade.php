@@ -57,7 +57,7 @@
                 </div>
                 <div class="card-body">
                     <div class="mb-3 text-center">
-                        <label class="text-danger">Silahkan foto wajah dengan jelas</label><br>
+                        <label class="text-danger">Silahkan foto wajah dan KTP dengan jelas</label><br>
                         <img src="{{ asset('img/tutor.png') }}" style="height: 300px"><br>
                         <video id="video" width="400" height="300" autoplay></video><br>
                         <div id="resultContainer" class="text-center" style="display: none;">
