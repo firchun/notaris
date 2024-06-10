@@ -9,9 +9,11 @@ class NotifikasiController extends Controller
 {
     public function readAll()
     {
-        $notifikasi = Notifikasi::where('dibaca', 0);
-        $notifikasi->dibaca = 1;
-        $notifikasi->save();
+        $notifikasi = Notifikasi::where('dibaca', 0)->get();
+        foreach ($notifikasi as $notif) {
+            $notif->dibaca = 1;
+            $notif->save();
+        }
 
         session()->flash('success', 'semua notifikasi telah dibaca');
         return back();
