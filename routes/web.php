@@ -5,11 +5,13 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LayananController;
+use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PelayananController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Models\Layanan;
+use App\Models\Notifikasi;
 use App\Models\Pelayanan;
 use App\Models\PembayaranPelayanan;
 use App\Models\Setting;
@@ -92,6 +94,14 @@ Route::middleware(['auth:web', 'verified', 'role:User'])->group(function () {
     Route::post('/pengajuan_layanan/store',  [PelayananController::class, 'store'])->name('pengajuan_layanan.store');
 });
 Route::middleware(['auth:web', 'verified', 'role:Admin,Staff,Keuangan'])->group(function () {
+    //notifikasi
+    Route::get('/read-one/{id}', [NotifikasiController::class, 'readOne']);
+    Route::post('/read-all', [NotifikasiController::class, 'readAll']);
+    Route::get('/notifikasi', function () {
+        $title = 'Semua Notifikasi';
+        $notifikasi = Notifikasi::where('id_user', Auth::id())->latest()->get();
+        return view('admin/notifikasi', ['title' => $title, 'notifikasi' => $notifikasi]);
+    });
     Route::get('/layanans-datatable', [LayananController::class, 'getLayanansDataTable']);
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     //akun managemen

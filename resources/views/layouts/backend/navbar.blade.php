@@ -39,7 +39,7 @@
                     </li>
                     @forelse(App\Models\Notifikasi::getUserNotifikasi(Auth::id()) as $item)
                         <li>
-                            <a href="{{ Url($item->url) }}" class="dropdown-item text-{{ $item->jenis }}"><i
+                            <a href="{{ Url('/read-one', $item->id) }}" class="dropdown-item text-{{ $item->jenis }}"><i
                                     class="bx bx-bell bx-sm text-{{ $item->jenis }}"></i>
                                 {{ Str::limit($item->isi_notifikasi, 100) }}
                             </a>
@@ -53,7 +53,7 @@
                         <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                        <a class="dropdown-item text-center" href="#">
+                        <a class="dropdown-item text-center" href="{{ url('/notifikasi') }}">
                             <span class="align-center">Lihat Semua Notifikasi</span>
                         </a>
                     </li>
