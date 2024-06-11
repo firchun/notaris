@@ -22,8 +22,11 @@ class CekUserLogin
         if (($request->user() && in_array($request->user()->role, $role))) {
             return $next($request);
         }
-
-        return redirect()->back()->with('danger', 'Anda tidak memiliki akses pada halaman ini');
+        if ($request->user()) {
+            return redirect()->back()->with('danger', 'Anda tidak memiliki akses pada halaman ini');
+        } else {
+            return redirect()->to('/');
+        }
         // return response()->json(['Anda tidak mempunyai akses pada halaman ini.']);
     }
 }
