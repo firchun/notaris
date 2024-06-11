@@ -79,6 +79,15 @@
                                             value="{{ old('email', Auth::user()->email) }}">
                                     </div>
                                 </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group  mb-3">
+                                        <label class="form-control-label" for="no_hp">Nomor HP<span
+                                                class="small text-danger">*</span></label>
+                                        <input type="text" id="no_hp"
+                                            class="form-control  @error('no_hp') is-invalid @enderror" name="no_hp"
+                                            placeholder="+628XXXXXX" value="{{ old('no_hp', Auth::user()->no_hp) }}">
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-4">
