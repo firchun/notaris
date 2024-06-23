@@ -101,7 +101,7 @@ Route::middleware(['auth:web', 'verified', 'role:User'])->group(function () {
             'pengajuan' => $pengajuan,
         ];
         return view('pages/pengajuan_edit', $data);
-    })->name('pengajuan_layanan');
+    })->name('pengajuan_layanan.edit');
     //profile
     Route::get('/profile_user', [ProfileController::class, 'profileUser'])->name('profile_user');
     //pengajuan layanan
