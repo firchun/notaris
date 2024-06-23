@@ -50,6 +50,8 @@
                                    <li class="nav-item {{ request()->is('kontak_kami') ? 'active' : '' }}"><a
                                            class="nav-link" href="{{ url('/kontak_kami') }}">Kontak
                                            Kami</a></li>
+                                   <li class="nav-item {{ request()->is('panduan') ? 'active' : '' }}"><a
+                                           class="nav-link" href="{{ url('/panduan') }}">Panduan</a></li>
                                    @if (Auth::check())
                                        @if (Auth::user()->role == 'User')
                                            <li class="nav-item {{ request()->is('pengajuan_user') ? 'active' : '' }}">

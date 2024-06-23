@@ -42,13 +42,15 @@
                     </div>
                 </div><!-- Col end -->
                 <div class="col-md-4 text-center text-md-right mt-3 mt-md-0">
-                    <div class="call-to-action-btn">
+                    <div class="call-to-action-btn d-flex">
                         @if (Auth::check())
                             @if (Auth::user()->role == 'User')
+                                <a class="btn btn-dark mx-2" href="{{ url('/panduan') }}">Panduan Pengajuan</a>
                                 <a class="btn btn-dark" href="{{ url('/pengajuan_user') }}">Cek Pengajuan Anda</a>
                             @endif
                         @else
-                            <a class="btn btn-dark" href="{{ route('register') }}">daftar sekarang</a>
+                            <a class="btn btn-dark mx-2" href="{{ url('/panduan') }}">Panduan Pengajuan</a>
+                            <a class="btn btn-dark" href="{{ route('register') }}">Daftar sekarang</a>
                         @endif
                     </div>
                 </div><!-- col end -->

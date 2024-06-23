@@ -44,6 +44,7 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Foto</th>
                                     <th>Total Bayar</th>
                                     <th>Action</th>
                                 </tr>
@@ -51,6 +52,7 @@
                             <tfoot>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Foto</th>
                                     <th>Total Bayar</th>
                                     <th>Action</th>
                                 </tr>

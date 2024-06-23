@@ -68,7 +68,7 @@
                         <input type="file" name="capture" class="form-control" id="captureInput" style="display: none;">
                     </div>
                     <div class="mb-3">
-                        <label>Nama Pemohon</label>
+                        <label>Username</label>
                         <input type="hidden" name="id_user" value="{{ Auth::user()->id }}">
                         <input type="hidden" name="id_layanan" value="{{ $layanan->id }}">
                         <input type="text" class="form-control" value="{{ Auth::user()->name }}" name="nama_pemohon">
@@ -84,8 +84,10 @@
                     @foreach (App\Models\BerkasLayanan::where('id_layanan', $layanan->id)->get() as $berkas)
                         <input type="hidden" name="id_berkas_layanan[]" value="{{ $berkas->id }}">
                         <div class="mb-3">
-                            <label>Berkas : {{ $berkas->nama_berkas }} <span class="text-danger">*</span></label>
-                            <input type="file" name="berkas[]" class="form-control" required>
+                            <label>Berkas : {{ $berkas->nama_berkas }} <span class="text-danger">* (PDF)(Ukuran berkas
+                                    maksimal
+                                    10MB)</span></label>
+                            <input type="file" name="berkas[]" class="form-control" accept=".pdf" required>
                         </div>
                     @endforeach
                 </div>

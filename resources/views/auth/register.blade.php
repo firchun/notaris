@@ -87,6 +87,17 @@
                             </span>
                         @enderror
                     </div>
+                    <div class="mb-3">
+                        <label for="no_hp" class="form-label" id="no-title">Nomor HP</label>
+                        <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="+628xxxxx"
+                            value="+62" />
+                        @error('no_hp')
+                            <span class="text-danger" role="alert">
+                                <small>{{ $message }}</small>
+                            </span>
+                        @enderror
+                    </div>
+
                     <div class="mb-3 form-password-toggle">
                         <div class="d-flex justify-content-between">
                             <label class="form-label" for="password">Password<br><small>*Minimal 8 atau lebih

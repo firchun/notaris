@@ -44,7 +44,6 @@ class LoginController extends Controller
         if (Auth::user()->role == 'User') {
             return '/';
         } else {
-
             return $this->redirectTo;
         }
     }

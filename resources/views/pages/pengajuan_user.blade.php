@@ -81,6 +81,25 @@
                             {{ $item->no_dokumen }}</h5>
                     </div>
                     <div class="modal-body">
+                        @if ($item->is_paid == 0 && $item->is_continue == 1)
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <p>
+                                    Pembayaran dapat di bayarkan langsung ke kantor atau bisa dengan transfer
+                                    pada bank
+                                    yang tersedia sebagai berikut :
+                                <ol>
+                                    <li>Bank Negara Indonesia (Persero) Tbk,Cabang Merauke di Nomor Rekening Giro :
+                                        8888811793
+                                        a/n
+                                        Ahmad Ali
+                                        Muddin
+                                    </li>
+                                    <li>Bank Mandiri (Persero) Tbk, di Nomor Rekening : 1520001417746 a/n Ahmad Ali Muddin
+                                    </li>
+                                </ol>
+                                </p>
+                            </div>
+                        @endif
                         <table class="table table-striped table-bordered">
                             <tr>
                                 <td>Nomor Dokumen</td>
@@ -122,6 +141,19 @@
                                 <td>{{ App\Models\PelayananStatus::where('id_pelayanan', $item->id)->latest()->first()->status }}
                                 </td>
                             </tr>
+
+                            @if (App\Models\BerkasAkhir::where('id_pelayanan', $item->id)->first() != null && $item->is_paid == 1)
+                                <tr>
+                                    <td>Berkas Akhir</td>
+                                    <td>
+                                        <a href="{{ Storage::url(App\Models\BerkasAkhir::where('id_pelayanan', $item->id)->first()->berkas_akhir) }}"
+                                            class="btn btn-dark" download>Download Berkas Akhir</a><br>
+                                        <small class="text-mutted">*Berkas ini di bersifat preview, untuk berkas asli harap
+                                            mengambil di
+                                            kantor</small>
+                                    </td>
+                                </tr>
+                            @endif
                         </table>
                         <hr>
                         <h6>Tracking dokumen</h6>
@@ -141,7 +173,10 @@
                         </table>
                     </div>
                     <div class="modal-footer">
-
+                        @if ($item->is_verified == 2)
+                            <a href="{{ url('/pengajuan_layanan/edit', $item->id) }}"
+                                class="btn btn-warning btn-md">Perbaiki Pengajuan</a>
+                        @endif
                         <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
@@ -160,9 +195,18 @@
                             <b class="text-danger"> Rp {{ number_format($item->biaya) }}</b>
                         </p>
                         <p>
-                            Untuk melakukan pembayaran, bisa datang langsung ke kantor atau bisa dengan transfer pada bank
-                            yang tersedia..
+                            Mohon Biaya tersebut kirannya dapat di bayarkan langsung ke kantor atau bisa dengan transfer
+                            pada bank
+                            yang tersedia sebagai berikut :
+                        <ol>
+                            <li>Bank Negara Indonesia (Persero) Tbk,Cabang Merauke di Nomor Rekening Giro : 8888811793 a/n
+                                Ahmad Ali
+                                Muddin
+                            </li>
+                            <li>Bank Mandiri (Persero) Tbk, di Nomor Rekening : 1520001417746 a/n Ahmad Ali Muddin</li>
+                        </ol>
                         </p>
+
                     </div>
                     <div class="modal-footer">
                         <a href="{{ url('/setujui-dokumen', $item->id) }}" class="btn btn-success btn-md">Setujui</a>

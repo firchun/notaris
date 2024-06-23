@@ -9,7 +9,9 @@ use App\Models\PembayaranPelayanan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class PembayaranController extends Controller
 {
@@ -21,10 +23,13 @@ class PembayaranController extends Controller
             ->addColumn('total', function ($pembayaran) {
                 return 'Rp ' . number_format($pembayaran->total);
             })
+            ->addColumn('foto', function ($pembayaran) {
+                return '<a target="__blank" href="' . Storage::url($pembayaran->foto) . '"> <img src="' . Storage::url($pembayaran->foto) . '" style="width:50px;"></a>';
+            })
             ->addColumn('action', function ($pembayaran) {
                 return '<button class="btn btn-sm btn-danger" onclick="destroyPembayaran(' . $pembayaran->id . ')"><i class="bx bx-trash"></i></button>';
             })
-            ->rawColumns(['total', 'action'])
+            ->rawColumns(['total', 'action', 'foto'])
             ->make(true);
     }
     public function getAllPembayaranDataTable(Request $request)
@@ -62,6 +67,9 @@ class PembayaranController extends Controller
     }
     public function store(Request $request)
     {
+        if ($request->file('foto') == null || $request->file('foto') == '') {
+            return response()->json(['message' => 'Harap upload foto bukti pembayaran']);
+        }
         //pembayaran
         $pembayaran_old = PembayaranPelayanan::where('id_pelayanan', $request->input('id'))->sum('total');
         $pembayaran_new = $request->input('total');
@@ -92,10 +100,16 @@ class PembayaranController extends Controller
             }
             session()->flash('success', 'Pembayaran telah lunas');
         }
+        //foto pembayaran
+        $foto = $request->file('foto');
+        $filename_foto = Str::random(32) . '.' . $foto->getClientOriginalExtension();
+        $file_path_foto = $foto->storeAs('public/berkas', $filename_foto);
+
         $pembayaran = new PembayaranPelayanan();
         $pembayaran->id_staff = Auth::id();
         $pembayaran->id_pelayanan = $request->input('id');
         $pembayaran->total = $request->input('total');
+        $pembayaran->foto = $file_path_foto;
         $pembayaran->save();
         return response()->json(['message' => 'Berhasil menambah pembayaran']);
     }

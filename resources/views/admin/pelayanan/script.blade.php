@@ -165,14 +165,14 @@
                 });
             });
             window.lihatPengajuan = function(id) {
-                $('#loadingIcon').removeClass('d-none');
-                $('#buttonText').addClass('d-none');
+                $('#loadingIcon-' + id).removeClass('d-none');
+                $('#buttonText-' + id).addClass('d-none');
                 $.ajax({
                     type: 'GET',
                     url: '/pelayanan/show/' + id,
                     success: function(response) {
-                        $('#loadingIcon').addClass('d-none');
-                        $('#buttonText').removeClass('d-none');
+                        $('#loadingIcon-' + id).addClass('d-none');
+                        $('#buttonText-' + id).removeClass('d-none');
                         var tableHtml = '<table class="table table-striped table-bordered">' +
                             '<tr>' +
                             '<td>Nomor Dokumen</td>' +
@@ -210,12 +210,23 @@
                         });
 
                         tableHtml += '</table>';
+                        //verified 0 = menunggu
+                        // verified 1 = setuju
+                        // verified 2 = tolak
                         if (response.is_verified == 0) {
                             $('#btnTerima').show().data('id', response.id);
                             $('#btnTolak').show().data('id', response.id);
+                            // $('#btnTolak').show();
+                            $('#keteranganPenolakan').show();
+                            $('#keteranganTolak').hide();
+                        } else if (response.is_verified == 2) {
+                            $('#textKeteranganTolak').text(response.keterangan);
+                            $('#keteranganTolak').show();
                         } else {
+                            $('#keteranganTolak').hide();
                             $('#btnTerima').hide();
                             $('#btnTolak').hide();
+                            $('#keteranganPenolakan').hide();
                         }
 
                         $('#customersModal .body').html(tableHtml);
@@ -260,8 +271,39 @@
                     error: function(xhr) {
                         alert('Terjadi kesalahan: ' + xhr.responseText);
                     }
+
+
+
                 });
             };
+        });
+        $('#btnTolak').click(function() {
+            var keterangan = $('#formKeteranganPenolakan').val();
+            var idPelayanan = $(this).data('id');
+
+            if (!keterangan) {
+                alert('Keterangan penolakan harus diisi!');
+                return;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/pelayanan/tolak/' + idPelayanan,
+                data: {
+                    keterangan: keterangan,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    alert(response.message);
+                    $('#datatable-pelayanan').DataTable().ajax.reload();
+                    $('#customersModal').hide();
+                },
+                error: function(xhr) {
+                    $('#datatable-pelayanan').DataTable().ajax.reload();
+                    $('#customersModal').hide();
+                    // alert('Terjadi kesalahan: ' + xhr.responseText);
+                }
+            });
         });
     </script>
 @endpush

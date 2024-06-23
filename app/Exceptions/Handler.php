@@ -47,4 +47,12 @@ class Handler extends ExceptionHandler
             //
         });
     }
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof \Illuminate\Http\Exceptions\ThrottleRequestsException) {
+            return redirect('/');
+        }
+
+        return parent::render($request, $exception);
+    }
 }

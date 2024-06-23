@@ -8,6 +8,7 @@ use App\Models\Pelayanan;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -28,6 +29,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role == 'User') {
+            return redirect()->to('/');
+        }
         $data = [
             'title' => 'Dashboard',
             'users' => User::where('role', 'User')->count(),

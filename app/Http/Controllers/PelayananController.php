@@ -87,6 +87,98 @@ class PelayananController extends Controller
             ->rawColumns(['action', 'action_biaya', 'status', 'pemohon', 'date', 'biaya_text', 'pembayaran', 'send', 'capture'])
             ->make(true);
     }
+    public function storePerbaikan(Request $request)
+    {
+        $request->validate([
+            'berkas.*' => 'required|file|mimes:pdf,doc,docx|max:10240',
+        ], [
+            'berkas.*.max' => 'Ukuran file tidak boleh melebihi 10MB.',
+            'berkas.*.mimes' => 'Berkas :attribute harus berformat PDF.',
+        ]);
+
+
+        $permohonanData = [
+            'is_verified' => 0,
+        ];
+
+        $pelayanan = Pelayanan::find($request->id);
+        $pelayanan->update($permohonanData);
+        $layanan = Layanan::find($pelayanan->id_layanan);
+
+
+        foreach ($request->file('berkas') as $key => $file) {
+            // Cek apakah ada berkas yang sudah ada
+            $berkas_layanan = BerkasPelayanan::where('id_berkas_layanan', $request->input('id_berkas_layanan')[$key])
+                ->where('id_pelayanan', $pelayanan->id)
+                ->first();
+
+            if ($berkas_layanan) {
+                // Jika berkas sudah ada, hapus yang lama
+                Storage::delete($berkas_layanan->berkas);
+            }
+
+            // Generate nama file yang unik
+            $filename = Str::random(32) . '.' . $file->getClientOriginalExtension();
+
+            // Simpan berkas ke storage
+            $file_path_berkas = $file->storeAs('public/berkas', $filename);
+
+            if ($berkas_layanan) {
+                // Update data berkas yang sudah ada
+                $berkas_layanan->update([
+                    'berkas' => $file_path_berkas,
+                ]);
+            } else {
+                // Jika berkas belum ada, simpan data baru
+                $berkas_layanan = new BerkasPelayanan();
+                $berkas_layanan->id_berkas_layanan = $request->input('id_berkas_layanan')[$key]; // Pastikan ini nilai tunggal, bukan array
+                $berkas_layanan->berkas = $file_path_berkas;
+                $berkas_layanan->id_pelayanan = $pelayanan->id;
+                $berkas_layanan->save();
+            }
+        }
+
+        foreach ($request->input('id_formulir_layanan') as $key => $id_formulir_layanan) {
+            $formulir_pelayanan = FormulirPelayanan::where('id_formulir_layanan', $id_formulir_layanan)
+                ->where('id_pelayanan', $pelayanan->id)
+                ->first();
+
+            if ($formulir_pelayanan) {
+                // Jika formulir sudah ada, update
+                $formulir_pelayanan->update([
+                    'isi_formulir' => $request->input('isi_formulir')[$key],
+                ]);
+            } else {
+                // Jika formulir belum ada, simpan data baru
+                $formulir_pelayanan = new FormulirPelayanan();
+                $formulir_pelayanan->id_formulir_layanan = $id_formulir_layanan;
+                $formulir_pelayanan->id_pelayanan = $pelayanan->id;
+                $formulir_pelayanan->isi_formulir = $request->input('isi_formulir')[$key];
+                $formulir_pelayanan->save();
+            }
+        }
+        //status pelayanan
+        $status = new PelayananStatus();
+        $status->id_pelayanan = $pelayanan->id;
+        $status->status = 'Menunggu verifikasi ulang oleh staf';
+        $status->save();
+
+        //notifikasi 
+        $staff = User::where('role', 'Staff')->get();
+        $pemohon = User::find(Auth::user()->id);
+        foreach ($staff as $item) {
+            $notifikasi = new Notifikasi();
+            $notifikasi->id_user = $item->id;
+            $notifikasi->isi_notifikasi = 'Sdr.' . $pemohon->name . ', telah mengajukan perbaikan pada permohonan layanan : ' . $layanan->nama_layanan;
+            $notifikasi->jenis = 'primary';
+            $notifikasi->url = '/pelayanan';
+            $notifikasi->save();
+        }
+
+
+        $message = 'Perbaikan Pengajuan telah berhasil';
+        return redirect()->to('/pengajuan_user')->withSuccess($message);
+    }
     public function store(Request $request)
     {
         $request->validate([
@@ -94,7 +186,10 @@ class PelayananController extends Controller
             'id_layanan' => 'required',
             'id_user' => 'required',
             'capture' => 'required',
-            'berkas.*' => 'required|file|mimes:pdf,doc,docx',
+            'berkas.*' => 'required|file|mimes:pdf,doc,docx|max:10240',
+        ], [
+            'berkas.*.max' => 'Ukuran file tidak boleh melebihi 10MB.',
+            'berkas.*.mimes' => 'Berkas :attribute harus berformat PDF.',
         ]);
 
         $layanan = Layanan::find($request->id_layanan);
@@ -221,12 +316,16 @@ class PelayananController extends Controller
 
         return response()->json(['message' => 'Data berhasil diverifikasi']);
     }
-    public function tolak($id)
+    public function tolak(Request $request, $id)
     {
+        if ($request->input('keterangan') == null || $request->input('keterangan') == '') {
+            return response()->json(['message' => 'Keterangan penolakan harus diisi!']);
+        }
         $pelayanan = Pelayanan::find($id);
         $pelayanan->is_verified = 2;
         $pelayanan->id_staff = Auth::user()->id;
-        $pelayanan->update();
+        $pelayanan->keterangan = $request->input('keterangan');
+        $pelayanan->save();
 
         $status = new PelayananStatus();
         $status->id_pelayanan = $id;
@@ -239,7 +338,7 @@ class PelayananController extends Controller
     public function perbaiki($id)
     {
         $pelayanan = Pelayanan::find($id);
-        $pelayanan->is_verified = 3;
+        $pelayanan->is_verified = 0;
         $pelayanan->id_staff = Auth::user()->id;
         $pelayanan->update();
 
@@ -322,6 +421,13 @@ class PelayananController extends Controller
                     "-------------------------------------\n" .
                     "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
                     url('/pengajuan_user') . "\n";
+            } elseif ($pelayanan->is_verified == 2) {
+                $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                    "Berkas di tolak dan harap untuk di lengkapi kembali, \n" .
+                    "Keterangan : " . $pelayanan->keterangan . " \n" .
+                    "-------------------------------------\n" .
+                    "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
+                    url('/pengajuan_user') . "\n";
             } elseif ($cek_berkas_akhir->count() != 0) {
                 if ($cek_berkas_akhir->diterima == 0) {
 
@@ -341,22 +447,53 @@ class PelayananController extends Controller
             $pesan_encoded = urlencode($pesan);
             $url = 'https://api.whatsapp.com/send?phone=' . $pelayanan->pemohon->no_hp . '&text=' . $pesan_encoded;
         } elseif (Auth::user()->role == 'Keuangan') {
+            $cek_berkas_akhir = BerkasAkhir::where('id_pelayanan', $pelayanan->id)->count();
+            $cek_berkas_akhir_diterima = BerkasAkhir::where('id_pelayanan', $pelayanan->id)->latest()->first()->diterima;
             //api wa
             if ($pelayanan->is_continue == 0) {
                 $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
                     "Total Tagihan : Rp. " . $pelayanan->biaya . "\n" .
                     "-------------------------------------\n" .
                     "Silahkan login pada akun anda dan konfirmasi untuk melanjutkan dokumen \n" .
-                    url('/pengajuan_user') . "\n";
+                    url('/pengajuan_user') . "\n" .
+                    "-------------------------------------\n" .
+                    "Pembayaran dapat di bayarkan langsung ke kantor atau bisa dengan transfer pada bank yang tersedia sebagai berikut : \n" .
+                    "1. Bank Negara Indonesia (Persero) Tbk,Cabang Merauke di Nomor Rekening Giro : 8888811793 a/n Ahmad Ali Muddin\n" .
+                    "2. Bank Mandiri (Persero) Tbk, di Nomor Rekening : 1520001417746 a/n Ahmad Ali Muddin\n";
             } elseif ($pelayanan->is_continue == 1) {
                 $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
                     "Total Tagihan : Rp. " . $pelayanan->biaya . "\n" .
                     "Status : Telah dilanjutkan dan dokumen akan di proses\n" .
                     "-------------------------------------\n" .
                     "Silahkan login pada akun anda untuk melihat progress dokumen \n" .
+                    url('/pengajuan_user') . "\n" .
+                    "-------------------------------------\n" .
+                    "Pembayaran dapat di bayarkan langsung ke kantor atau bisa dengan transfer pada bank yang tersedia sebagai berikut : \n" .
+                    "1. Bank Negara Indonesia (Persero) Tbk,Cabang Merauke di Nomor Rekening Giro : 8888811793 a/n Ahmad Ali Muddin\n" .
+                    "2. Bank Mandiri (Persero) Tbk, di Nomor Rekening : 1520001417746 a/n Ahmad Ali Muddin\n";
+            } elseif ($pelayanan->is_paid == 1) {
+                $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                    "Total Tagihan : Rp. " . $pelayanan->biaya . "\n" .
+                    "Status : Berkas telah lunas dan dokumen di proses\n" .
+                    "-------------------------------------\n" .
+                    "Silahkan login pada akun anda untuk melihat progress dokumen \n" .
                     url('/pengajuan_user') . "\n";
-            } else {
-                $pesan = "";
+            } elseif ($pelayanan->is_paid == 1 &&  $cek_berkas_akhir != 0) {
+                if ($cek_berkas_akhir_diterima == 1) {
+                    $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                        "Total Tagihan : Rp. " . $pelayanan->biaya . "\n" .
+                        "Status : Berkas telah selesai dan telah diterima\n" .
+                        "-------------------------------------\n" .
+                        "Silahkan login pada akun anda untuk melihat progress dokumen \n" .
+                        url('/pengajuan_user') . "\n";
+                } else {
+                    $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                        "Total Tagihan : Rp. " . $pelayanan->biaya . "\n" .
+                        "Status : Berkas telah selesai di proses dan siap diambil\n" .
+                        "-------------------------------------\n" .
+                        "Silahkan login pada akun anda untuk melihat progress dokumen \n" .
+                        url('/pengajuan_user') . "\n";
+                }
             }
 
             $pesan_encoded = urlencode($pesan);

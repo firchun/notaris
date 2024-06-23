@@ -14,14 +14,22 @@
 
                 </div>
                 <!-- Form for Create and Edit -->
-
+                <form id="keteranganPenolakan" style="display: none;">
+                    <hr>
+                    <label class="text-danger">Keterangan Penolakan</label>
+                    <textarea class="form-control" name="keterangan" id="formKeteranganPenolakan"></textarea>
+                </form>
+                <div class="text-danger" id="keteranganTolak">
+                    <hr>
+                    Pengajuan ditolak dengan keterangan :<br>
+                    <strong class="" id="textKeteranganTolak"></strong>
+                </div>
             </div>
             <div class="modal-footer">
                 @if (Auth::user()->role == 'Staff')
                     <button type="button" class="btn btn-success btn-action" data-action="terima" id="btnTerima"
                         style="display: none;">Terima</button>
-                    <button type="button" class="btn btn-danger btn-action" data-action="tolak" id="btnTolak"
-                        style="display: none;">Tolak</button>
+                    <button type="button" class="btn btn-danger " id="btnTolak" style="display: none;">Tolak</button>
                 @endif
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>

@@ -33,6 +33,7 @@ class ProfileController extends Controller
     {
         try {
             $request->validate([
+                'no_hp' => 'nullable',
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email,' . Auth::user()->id,
                 'current_password' => 'nullable|required_with:new_password',
@@ -44,6 +45,7 @@ class ProfileController extends Controller
             $user = User::findOrFail(Auth::user()->id);
             $user->name = $request->input('name');
             $user->email = $request->input('email');
+            $user->no_hp = $request->input('no_hp');
 
             if (!is_null($request->input('current_password'))) {
                 if (Hash::check($request->input('current_password'), $user->password)) {

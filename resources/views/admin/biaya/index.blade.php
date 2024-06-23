@@ -182,6 +182,10 @@
                         },
 
                         {
+                            data: 'foto',
+                            name: 'foto'
+                        },
+                        {
                             data: 'total',
                             name: 'total'
                         },
@@ -220,19 +224,24 @@
                 });
             });
             $('#btnUpdatePembayaran').click(function() {
-                // var formData = $('#inputBiaya').serialize();
                 var total = $('#formJumlahPembayaran').val();
                 var id = $('#idPelayananPembayaran').val();
+                var foto = $('#fotoPembayaran').prop('files')[0];
+
+                var formData = new FormData();
+                formData.append('id', id);
+                formData.append('total', total);
+                formData.append('foto', foto);
 
                 $.ajax({
                     type: 'POST',
                     url: '/pembayaran/store',
-                    data: {
-                        id: id,
-                        total: total,
-                        _token: $('meta[name="csrf-token"]').attr('content')
+                    data: formData,
+                    contentType: false, // Tidak mengatur contentType secara eksplisit karena menggunakan FormData
+                    processData: false, // Tidak memproses data secara default karena menggunakan FormData
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-
                     success: function(response) {
                         alert(response.message);
                         $('#formJumlahPembayaran').val('');

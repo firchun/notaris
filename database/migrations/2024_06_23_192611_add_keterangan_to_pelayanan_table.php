@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('no_hp')->default('+62')->after('email');
+        Schema::table('pelayanan', function (Blueprint $table) {
+            $table->text('keterangan')->nullable()->after('is_verified');
         });
     }
 
@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('pelayanan', function (Blueprint $table) {
             //
         });
     }

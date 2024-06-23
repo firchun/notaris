@@ -45,6 +45,10 @@ Route::get('/pengajuan_layanan', function () {
     $title = 'Pengajuan Layanan';
     return view('pages/pengajuan_layanan', ['title' => $title]);
 });
+Route::get('/panduan', function () {
+    $title = 'Panduan Pengajuan';
+    return view('pages/panduan', ['title' => $title]);
+});
 Route::get('/kontak_kami', function () {
     $data = [
         'title' => 'Kontak Kami',
@@ -88,10 +92,21 @@ Route::middleware(['auth:web', 'verified', 'role:User'])->group(function () {
         ];
         return view('pages/pengajuan', $data);
     })->name('pengajuan_layanan');
+    Route::get('/pengajuan_layanan/edit/{id}', function ($id) {
+        $pengajuan = Pelayanan::find($id);
+        $layanan = Layanan::find($pengajuan->id_layanan);
+        $data = [
+            'title' => 'Update Ajukan Layanan : ' . $layanan->nama_layanan,
+            'layanan' => $layanan,
+            'pengajuan' => $pengajuan,
+        ];
+        return view('pages/pengajuan_edit', $data);
+    })->name('pengajuan_layanan');
     //profile
     Route::get('/profile_user', [ProfileController::class, 'profileUser'])->name('profile_user');
     //pengajuan layanan
     Route::post('/pengajuan_layanan/store',  [PelayananController::class, 'store'])->name('pengajuan_layanan.store');
+    Route::post('/pengajuan_layanan/storePerbaikan',  [PelayananController::class, 'storePerbaikan'])->name('pengajuan_layanan.storePerbaikan');
 });
 Route::middleware(['auth:web', 'verified', 'role:Admin,Staff,Keuangan'])->group(function () {
     //notifikasi
@@ -124,7 +139,7 @@ Route::middleware(['auth:web', 'verified', 'role:Staff'])->group(function () {
     //pelayanan managemen
     Route::post('/pelayanan/store',  [PelayananController::class, 'store'])->name('pelayanan.store');
     Route::get('/pelayanan/terima/{id}',  [PelayananController::class, 'terima'])->name('pelayanan.terima');
-    Route::get('/pelayanan/tolak/{id}',  [PelayananController::class, 'tolak'])->name('pelayanan.tolak');
+    Route::post('/pelayanan/tolak/{id}',  [PelayananController::class, 'tolak'])->name('pelayanan.tolak');
     Route::delete('/pelayanan/delete/{id}',  [PelayananController::class, 'destroy'])->name('pelayanan.delete');
 });
 Route::middleware(['auth:web', 'verified', 'role:Keuangan'])->group(function () {
