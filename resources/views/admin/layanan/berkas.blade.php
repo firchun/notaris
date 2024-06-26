@@ -82,6 +82,9 @@
             $('.create-new').click(function() {
                 $('#create').modal('show');
             });
+            $('.refresh').click(function() {
+                $('#datatable-berkas').DataTable().ajax.reload();
+            });
             window.editBerkas = function(id) {
                 $.ajax({
                     type: 'GET',
