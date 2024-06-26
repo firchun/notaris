@@ -82,7 +82,10 @@ class LayananController extends Controller
             ->addColumn('action', function ($berkas) {
                 return view('admin.layanan.components.actions_berkas', compact('berkas'));
             })
-            ->rawColumns(['action'])
+            ->addColumn('required', function ($berkas) {
+                return $berkas->is_required == 1 ? 'Wajib diisi' : 'Opsional';
+            })
+            ->rawColumns(['action', 'required'])
             ->make(true);
     }
     public function getFormulirDataTable($id)
@@ -136,6 +139,7 @@ class LayananController extends Controller
         $layananData = [
             'nama_berkas' => $request->input('nama_berkas'),
             'id_layanan' => $request->input('id_layanan'),
+            'is_required' => $request->input('is_required'),
         ];
 
         if ($request->filled('id')) {

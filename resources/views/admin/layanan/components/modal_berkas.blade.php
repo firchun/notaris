@@ -15,6 +15,13 @@
                         <label for="formNamaBerkas" class="form-label">Nama Berkas</label>
                         <input type="text" class="form-control" id="formNamaBerkas" name="nama_berkas" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="formNamaBerkas" class="form-label">Pengisian</label>
+                        <select name="is_required" class="form-select" id="formSelectRequired">
+                            <option value="1">Wajib diisi</option>
+                            <option value="0">Opsional</option>
+                        </select>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -38,6 +45,13 @@
                     <div class="mb-3">
                         <label for="formNamaBerkas" class="form-label">Nama Berkas</label>
                         <input type="text" class="form-control" id="formNamaBerkas" name="nama_berkas" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="formNamaBerkas" class="form-label">Pengisian</label>
+                        <select name="is_required" class="form-select" id="formSelectRequired">
+                            <option value="1">Wajib diisi</option>
+                            <option value="0">Opsional</option>
+                        </select>
                     </div>
                 </form>
             </div>

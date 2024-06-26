@@ -73,7 +73,7 @@ class PelayananController extends Controller
                 return '<strong>' . $pelayanan->nama_pemohon . '</strong><br><small class="text-muted">' . $pelayanan->pemohon->email . '</small>';
             })
             ->addColumn('status', function ($pelayanan) {
-                return PelayananStatus::where('id_pelayanan', $pelayanan->id)->latest()->first()->status;
+                return PelayananStatus::where('id_pelayanan', $pelayanan->id)->latest()->first()->status ?? '';
             })
             ->addColumn('pembayaran', function ($pelayanan) {
                 $warna = $pelayanan->is_paid == 0 ? 'text-danger' : 'text-success';
@@ -105,36 +105,37 @@ class PelayananController extends Controller
         $pelayanan->update($permohonanData);
         $layanan = Layanan::find($pelayanan->id_layanan);
 
+        if ($request->file('berkas')) {
+            foreach ($request->file('berkas') as $key => $file) {
+                // Cek apakah ada berkas yang sudah ada
+                $berkas_layanan = BerkasPelayanan::where('id_berkas_layanan', $request->input('id_berkas_layanan')[$key])
+                    ->where('id_pelayanan', $pelayanan->id)
+                    ->first();
 
-        foreach ($request->file('berkas') as $key => $file) {
-            // Cek apakah ada berkas yang sudah ada
-            $berkas_layanan = BerkasPelayanan::where('id_berkas_layanan', $request->input('id_berkas_layanan')[$key])
-                ->where('id_pelayanan', $pelayanan->id)
-                ->first();
+                if ($berkas_layanan) {
+                    // Jika berkas sudah ada, hapus yang lama
+                    Storage::delete($berkas_layanan->berkas);
+                }
 
-            if ($berkas_layanan) {
-                // Jika berkas sudah ada, hapus yang lama
-                Storage::delete($berkas_layanan->berkas);
-            }
+                // Generate nama file yang unik
+                $filename = Str::random(32) . '.' . $file->getClientOriginalExtension();
 
-            // Generate nama file yang unik
-            $filename = Str::random(32) . '.' . $file->getClientOriginalExtension();
+                // Simpan berkas ke storage
+                $file_path_berkas = $file->storeAs('public/berkas', $filename);
 
-            // Simpan berkas ke storage
-            $file_path_berkas = $file->storeAs('public/berkas', $filename);
-
-            if ($berkas_layanan) {
-                // Update data berkas yang sudah ada
-                $berkas_layanan->update([
-                    'berkas' => $file_path_berkas,
-                ]);
-            } else {
-                // Jika berkas belum ada, simpan data baru
-                $berkas_layanan = new BerkasPelayanan();
-                $berkas_layanan->id_berkas_layanan = $request->input('id_berkas_layanan')[$key]; // Pastikan ini nilai tunggal, bukan array
-                $berkas_layanan->berkas = $file_path_berkas;
-                $berkas_layanan->id_pelayanan = $pelayanan->id;
-                $berkas_layanan->save();
+                if ($berkas_layanan) {
+                    // Update data berkas yang sudah ada
+                    $berkas_layanan->update([
+                        'berkas' => $file_path_berkas,
+                    ]);
+                } else {
+                    // Jika berkas belum ada, simpan data baru
+                    $berkas_layanan = new BerkasPelayanan();
+                    $berkas_layanan->id_berkas_layanan = $request->input('id_berkas_layanan')[$key]; // Pastikan ini nilai tunggal, bukan array
+                    $berkas_layanan->berkas = $file_path_berkas;
+                    $berkas_layanan->id_pelayanan = $pelayanan->id;
+                    $berkas_layanan->save();
+                }
             }
         }
 
@@ -210,16 +211,18 @@ class PelayananController extends Controller
         $permohonanData['no_dokumen'] = 'AM' . $random_number . $jenis;
         $pelayanan = Pelayanan::create($permohonanData);
 
+        if ($request->file('berkas')) {
 
-        foreach ($request->file('berkas') as $key => $file) {
-            $filename = Str::random(32) . '.' . $file->getClientOriginalExtension();
-            $file_path_berkas = $file->storeAs('public/berkas', $filename);
+            foreach ($request->file('berkas') as $key => $file) {
+                $filename = Str::random(32) . '.' . $file->getClientOriginalExtension();
+                $file_path_berkas = $file->storeAs('public/berkas', $filename);
 
-            $berkas_layanan = new BerkasPelayanan();
-            $berkas_layanan->id_berkas_layanan = $request->input('id_berkas_layanan')[$key]; // Pastikan nilai ini adalah nilai tunggal, bukan array
-            $berkas_layanan->berkas = $file_path_berkas;
-            $berkas_layanan->id_pelayanan = $pelayanan->id;
-            $berkas_layanan->save();
+                $berkas_layanan = new BerkasPelayanan();
+                $berkas_layanan->id_berkas_layanan = $request->input('id_berkas_layanan')[$key]; // Pastikan nilai ini adalah nilai tunggal, bukan array
+                $berkas_layanan->berkas = $file_path_berkas;
+                $berkas_layanan->id_pelayanan = $pelayanan->id;
+                $berkas_layanan->save();
+            }
         }
 
         foreach ($request->input('id_formulir_layanan') as $key => $id_formulir_layanan) {

@@ -84,10 +84,13 @@
                     @foreach (App\Models\BerkasLayanan::where('id_layanan', $layanan->id)->get() as $berkas)
                         <input type="hidden" name="id_berkas_layanan[]" value="{{ $berkas->id }}">
                         <div class="mb-3">
-                            <label>Berkas : {{ $berkas->nama_berkas }} <span class="text-danger">* (PDF)(Ukuran berkas
+                            <label>Berkas : {{ $berkas->nama_berkas }} <span
+                                    class="text-danger">{{ $berkas->is_required == 1 ? '*' : '' }} (PDF)(Ukuran
+                                    berkas
                                     maksimal
                                     10MB)</span></label>
-                            <input type="file" name="berkas[]" class="form-control" accept=".pdf" required>
+                            <input type="file" name="berkas[]" class="form-control" accept=".pdf"
+                                {{ $berkas->is_required == 1 ? 'required' : '' }}>
                         </div>
                     @endforeach
                 </div>

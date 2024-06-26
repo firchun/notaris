@@ -246,13 +246,20 @@
 
                             var fotoUrl = "{{ Storage::url('') }}" + response.foto_penerimaan;
                             fotoUrl = fotoUrl.replace('public/', '');
-                            var berkasView = '<table class="table table-striped table-bordered">' +
-                                '<tr>' +
-                                '<td>Berkas Akhir</td>' +
-                                '<td><a target="__blank" href="' + berkasUrl +
-                                '" class="btn btn-success">Lihat' +
-                                'Berkas</a></td>' +
-                                '</tr>';
+
+                            if (response.berkas_akhir) {
+
+                                var berkasView =
+                                    '<table class="table table-striped table-bordered">' +
+                                    '<tr>' +
+                                    '<td>Berkas Akhir</td>' +
+                                    '<td><a target="__blank" href="' + berkasUrl +
+                                    '" class="btn btn-success">Lihat' +
+                                    'Berkas</a></td>' +
+                                    '</tr>';
+                            } else {
+                                $('#customersModal .berkas').hide();
+                            }
 
                             if (response.diterima == 1) {
                                 berkasView +=
@@ -271,9 +278,6 @@
                     error: function(xhr) {
                         alert('Terjadi kesalahan: ' + xhr.responseText);
                     }
-
-
-
                 });
             };
         });
@@ -296,11 +300,11 @@
                 success: function(response) {
                     alert(response.message);
                     $('#datatable-pelayanan').DataTable().ajax.reload();
-                    $('#customersModal').hide();
+                    $('#customersModal').modal('hide');
                 },
                 error: function(xhr) {
                     $('#datatable-pelayanan').DataTable().ajax.reload();
-                    $('#customersModal').hide();
+                    $('#customersModal').modal('hide');
                     // alert('Terjadi kesalahan: ' + xhr.responseText);
                 }
             });

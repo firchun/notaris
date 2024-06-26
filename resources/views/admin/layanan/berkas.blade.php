@@ -33,6 +33,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Nama Berkas</th>
+                                <th>Pengisian</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -41,6 +42,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Nama Berkas</th>
+                                <th>Pengisian</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
@@ -66,6 +68,10 @@
                     {
                         data: 'nama_berkas',
                         name: 'nama_berkas'
+                    },
+                    {
+                        data: 'required',
+                        name: 'required'
                     },
                     {
                         data: 'action',

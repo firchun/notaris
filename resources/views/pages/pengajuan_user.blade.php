@@ -49,7 +49,7 @@
                             <td>{{ $item->pemohon->name }}</td>
                             <td>{{ $item->layanan->nama_layanan }}</td>
                             <td>
-                                {{ App\Models\PelayananStatus::where('id_pelayanan', $item->id)->latest()->first()->status }}
+                                {{ App\Models\PelayananStatus::where('id_pelayanan', $item->id)->latest()->first()->status ?? '-' }}
                             </td>
                             <td>
                                 <a class="btn btn-dark" href="#" aria-label="service-details" data-toggle="modal"
@@ -138,7 +138,7 @@
                             </tr>
                             <tr>
                                 <td>Status pengajuan </td>
-                                <td>{{ App\Models\PelayananStatus::where('id_pelayanan', $item->id)->latest()->first()->status }}
+                                <td>{{ App\Models\PelayananStatus::where('id_pelayanan', $item->id)->latest()->first()->status ?? '-' }}
                                 </td>
                             </tr>
 

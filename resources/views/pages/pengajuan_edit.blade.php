@@ -80,13 +80,16 @@
                     @foreach (App\Models\BerkasLayanan::where('id_layanan', $layanan->id)->get() as $berkas)
                         <input type="hidden" name="id_berkas_layanan[]" value="{{ $berkas->id }}">
                         <div class="mb-3">
-                            <label>Berkas : {{ $berkas->nama_berkas }} <span class="text-danger">* (PDF)(Ukuran berkas
+                            <label>Berkas : {{ $berkas->nama_berkas }} <span
+                                    class="text-danger">{{ $berkas->is_required == 1 ? '*' : '' }} (PDF)(Ukuran berkas
                                     maksimal
                                     10MB)</span></label><br>
-                            <a href="{{ Storage::url(App\Models\BerkasPelayanan::where('id_pelayanan', $pengajuan->id)->where('id_berkas_layanan', $berkas->id)->latest()->first()->berkas) }}"
-                                target="__blank" class="btn btn-success mb-2 btn-sm">Lihat berkas
-                                <strong>{{ $berkas->nama_berkas }}</strong>
-                                sebelumnya</a>
+                            @if (App\Models\BerkasPelayanan::where('id_pelayanan', $pengajuan->id)->where('id_berkas_layanan', $berkas->id)->latest()->first() != null)
+                                <a href="{{ Storage::url(App\Models\BerkasPelayanan::where('id_pelayanan', $pengajuan->id)->where('id_berkas_layanan', $berkas->id)->latest()->first()->berkas) }}"
+                                    target="__blank" class="btn btn-success mb-2 btn-sm">Lihat berkas
+                                    <strong>{{ $berkas->nama_berkas }}</strong>
+                                    sebelumnya</a>
+                            @endif
                             <input type="file" name="berkas[]" class="form-control" accept=".pdf">
                         </div>
                     @endforeach
