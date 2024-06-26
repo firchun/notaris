@@ -446,6 +446,12 @@ class PelayananController extends Controller
                         "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
                         url('/pengajuan_user') . "\n";
                 }
+            } else {
+                $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                    "Telah di verifikasi dan menunggu perhitungan biaya \n" .
+                    "-------------------------------------\n" .
+                    "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
+                    url('/pengajuan_user') . "\n";
             }
             $pesan_encoded = urlencode($pesan);
             $url = 'https://api.whatsapp.com/send?phone=' . $pelayanan->pemohon->no_hp . '&text=' . $pesan_encoded;
