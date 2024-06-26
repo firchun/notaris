@@ -245,6 +245,7 @@
                     success: function(response) {
                         alert(response.message);
                         $('#formJumlahPembayaran').val('');
+                        $('#fotoPembayaran').val('');
                         // Refresh DataTable setelah menyimpan perubahan
                         $('#datatable-biaya').DataTable().ajax.reload();
                         $('#datatable-pembayaran').DataTable().ajax.reload();
