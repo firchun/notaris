@@ -431,33 +431,31 @@ class PelayananController extends Controller
                     "-------------------------------------\n" .
                     "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
                     url('/pengajuan_user') . "\n";
-            } elseif ($cek_berkas_akhir->count() != 0) {
-                if ($cek_berkas_akhir->diterima == 0) {
-
-                    $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
-                        "Berkas telah selesai, silahkan mengambil di kantor \n" .
-                        "-------------------------------------\n" .
-                        "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
-                        url('/pengajuan_user') . "\n";
-                } else {
-                    $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
-                        "Berkas telah diterima \n" .
-                        "-------------------------------------\n" .
-                        "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
-                        url('/pengajuan_user') . "\n";
-                }
             } else {
-                $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
-                    "Telah di verifikasi dan menunggu perhitungan biaya \n" .
-                    "-------------------------------------\n" .
-                    "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
-                    url('/pengajuan_user') . "\n";
+                if ($cek_berkas_akhir->count() != 0) {
+                    if ($cek_berkas_akhir->diterima == 0) {
+
+                        $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                            "Berkas telah selesai, silahkan mengambil di kantor \n" .
+                            "-------------------------------------\n" .
+                            "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
+                            url('/pengajuan_user') . "\n";
+                    } else {
+                        $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
+                            "Berkas telah diterima \n" .
+                            "-------------------------------------\n" .
+                            "Silahkan login pada akun anda untuk melihat progreess dokumen \n" .
+                            url('/pengajuan_user') . "\n";
+                    }
+                }
             }
             $pesan_encoded = urlencode($pesan);
             $url = 'https://api.whatsapp.com/send?phone=' . $pelayanan->pemohon->no_hp . '&text=' . $pesan_encoded;
         } elseif (Auth::user()->role == 'Keuangan') {
             $cek_berkas_akhir = BerkasAkhir::where('id_pelayanan', $pelayanan->id)->count();
-            $cek_berkas_akhir_diterima = BerkasAkhir::where('id_pelayanan', $pelayanan->id)->latest()->first()->diterima;
+            if (BerkasAkhir::where('id_pelayanan', $pelayanan->id)->count() != 0) {
+                $cek_berkas_akhir_diterima = BerkasAkhir::where('id_pelayanan', $pelayanan->id)->latest()->first()->diterima;
+            }
             //api wa
             if ($pelayanan->is_continue == 0) {
                 $pesan = "No. Dokumen: " . $pelayanan->no_dokumen . "\n" .
