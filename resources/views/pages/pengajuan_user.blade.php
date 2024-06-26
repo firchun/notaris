@@ -195,6 +195,18 @@
                             <b class="text-danger"> Rp {{ number_format($item->biaya) }}</b>
                         </p>
                         <p>
+                            <strong>Ketentuan Layanan : </strong>
+                        <ol>
+                            <li>Jika pembayaran ingin dicicil maka pembayaran wajib DP 50% (Rp
+                                {{ number_format($item->biaya / 2) }})</li>
+                            <li>Bukti transfer dapat dikirim ke nomor WhatsApp berikut dengan menyertakan nomor/kode dokumen
+                                Anda
+                                <a href="htpps://wa.me/+6282120937163">0821-2093-7163 (keuangan notaris)</a>
+                            </li>
+                        </ol>
+                        </p>
+                        <hr>
+                        <p>
                             Mohon Biaya tersebut kirannya dapat di bayarkan langsung ke kantor atau bisa dengan transfer
                             pada bank
                             yang tersedia sebagai berikut :
