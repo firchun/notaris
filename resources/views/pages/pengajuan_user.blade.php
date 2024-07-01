@@ -191,11 +191,16 @@
                             {{ $item->no_dokumen }}</h5>
                     </div>
                     <div class="modal-body">
-                        <p>Klik <b>Setujui</b> untuk melanjutkan pengurusan dokumen dengan biaya :
-                            <b class="text-danger"> Rp {{ number_format($item->biaya) }}</b>
+                        <p>
+                            Biaya Pengajuan Layanan : <b class="text-danger"> Rp {{ number_format($item->biaya) }}</b>
                         </p>
                         <p>
-                            <strong>Ketentuan Layanan : </strong>
+                            Untuk melanjutkan, Anda wajib tekan setujui. Dengan ini, Anda menyetujui bahwa dokumen layanan
+                            yang Anda ajukan akan kami proses dengan menyetujui ketentuan pembayaran.
+                        </p>
+
+                        <p>
+                            <strong>Ketentuan Pembayaran : </strong>
                         <ol>
                             <li>Jika pembayaran ingin dicicil maka pembayaran wajib DP 50% (Rp
                                 {{ number_format($item->biaya / 2) }}) dan wajib langsung melakukan pelunasan saat berkas
