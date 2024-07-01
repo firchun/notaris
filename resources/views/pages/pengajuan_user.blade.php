@@ -198,7 +198,9 @@
                             <strong>Ketentuan Layanan : </strong>
                         <ol>
                             <li>Jika pembayaran ingin dicicil maka pembayaran wajib DP 50% (Rp
-                                {{ number_format($item->biaya / 2) }})</li>
+                                {{ number_format($item->biaya / 2) }}) dan wajib langsung melakukan pelunasan saat berkas
+                                selesai
+                            </li>
                             <li>Bukti transfer dapat dikirim ke nomor WhatsApp berikut dengan menyertakan nomor/kode dokumen
                                 Anda
                                 <a href="htpps://wa.me/+6282120937163">0821-2093-7163 (keuangan notaris)</a>

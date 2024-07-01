@@ -83,7 +83,7 @@
                             <label>Berkas : {{ $berkas->nama_berkas }} <span
                                     class="text-danger">{{ $berkas->is_required == 1 ? '*' : '' }} (PDF)(Ukuran berkas
                                     maksimal
-                                    10MB)</span></label><br>
+                                    2MB)</span></label><br>
                             @if (App\Models\BerkasPelayanan::where('id_pelayanan', $pengajuan->id)->where('id_berkas_layanan', $berkas->id)->latest()->first() != null)
                                 <a href="{{ Storage::url(App\Models\BerkasPelayanan::where('id_pelayanan', $pengajuan->id)->where('id_berkas_layanan', $berkas->id)->latest()->first()->berkas) }}"
                                     target="__blank" class="btn btn-success mb-2 btn-sm">Lihat berkas

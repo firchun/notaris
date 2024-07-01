@@ -90,9 +90,9 @@ class PelayananController extends Controller
     public function storePerbaikan(Request $request)
     {
         $request->validate([
-            'berkas.*' => 'required|file|mimes:pdf,doc,docx|max:10240',
+            'berkas.*' => 'required|file|mimes:pdf,doc,docx|max:2240',
         ], [
-            'berkas.*.max' => 'Ukuran file tidak boleh melebihi 10MB.',
+            'berkas.*.max' => 'Ukuran file tidak boleh melebihi 2MB.',
             'berkas.*.mimes' => 'Berkas :attribute harus berformat PDF.',
         ]);
 
@@ -187,9 +187,9 @@ class PelayananController extends Controller
             'id_layanan' => 'required',
             'id_user' => 'required',
             'capture' => 'required',
-            'berkas.*' => 'required|file|mimes:pdf,doc,docx|max:10240',
+            'berkas.*' => 'required|file|mimes:pdf,doc,docx|max:2240',
         ], [
-            'berkas.*.max' => 'Ukuran file tidak boleh melebihi 10MB.',
+            'berkas.*.max' => 'Ukuran file tidak boleh melebihi 2MB.',
             'berkas.*.mimes' => 'Berkas :attribute harus berformat PDF.',
         ]);
 

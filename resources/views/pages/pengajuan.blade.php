@@ -88,7 +88,7 @@
                                     class="text-danger">{{ $berkas->is_required == 1 ? '*' : '' }} (PDF)(Ukuran
                                     berkas
                                     maksimal
-                                    10MB)</span></label>
+                                    2MB)</span></label>
                             <input type="file" name="berkas[]" class="form-control" accept=".pdf"
                                 {{ $berkas->is_required == 1 ? 'required' : '' }}>
                         </div>
